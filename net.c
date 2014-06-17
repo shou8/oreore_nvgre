@@ -47,6 +47,8 @@ int outer_loop(int soc)
 		/* IP */
 		struct iphdr *iphdr = (struct iphdr *)buf;
 		size_t iph_len = iphdr->ihl * 4;
+		bp = buf + iph_len;
+		len -= iph_len;
 
 #ifdef DEBUG
 		if (get_status()) {
@@ -60,8 +62,8 @@ int outer_loop(int soc)
 #endif
 
 		/* NVGRE */
-		struct nvgre_hdr *nvhdr = (struct nvgre_hdr *)(buf + iph_len);
-		bp = buf + sizeof(struct nvgre_hdr);
+		struct nvgre_hdr *nvhdr = (struct nvgre_hdr *)bp;
+		bp += sizeof(struct nvgre_hdr);
 		len -= sizeof(struct nvgre_hdr);
 
 #ifdef DEBUG
@@ -104,12 +106,14 @@ int inner_loop(nvgre_i *nvi)
 		if ((len = read(nvi->tap.sock, rp, rlen)) < 0)
 			log_perr("inner_loop.read");
 
+printf("len1: %d\n", len);
 		memset(nvh, 0, sizeof(struct nvgre_hdr));
 		nvh->flags.byte = NVGRE_FLAGS;
 		nvh->ver.byte = NVGRE_VERSION;
 		nvh->protocol_type = htons(NVGRE_PROTOCOLTYPE);
 		memcpy(nvh->vsid, nvi->vsid, VSID_BYTE);
 		len += sizeof(struct nvgre_hdr);
+printf("len2: %d\n", len);
 
 #ifdef DEBUG
 		if (get_status())
