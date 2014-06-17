@@ -17,7 +17,6 @@
 char param[][DEFAULT_BUFLEN] = {
 	"multicast_address",
 	"multicast_interface",
-	"port",
 	"unix_socket",
 	"nvgre_instance"
 };

@@ -12,10 +12,10 @@ LDFLAGS=
 
 PREFIX=/usr/local/bin
 SCRIPT_DIR=script
-LSB_SCRIPT=vxland
+LSB_SCRIPT=nvgred
 INIT_DIR=/etc/init.d
-CONFIG_SRC=./conf/vxlan.conf
-CONFIG_DST=/etc/vxlan.conf
+CONFIG_SRC=./conf/nvgre.conf
+CONFIG_DST=/etc/nvgre.conf
 
 .SUFFIXES: .c .o
 

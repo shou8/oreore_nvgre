@@ -125,6 +125,22 @@ static device create_nvgre_if(uint8_t *vsid)
 
 nvgre_i *add_nvi(char *buf, uint8_t *vsid, struct sockaddr_storage maddr)
 {
+	if (vsid[0] == 0xFF && vsid[1] == 0xFF && vsid[2] == 0xFF) {
+		log_info("The VSID 0xFFFFFF is reserved by protocol.\n");
+		log_info("This VSID is used by vendor (actually, it is not used in this program\n");
+		return NULL;
+	}
+
+	if (vsid[0] == 0 && vsid[1] < 0x10) {
+		log_info("The VSID (0x0 - 0xFFF) is reserved by protocol.\n");
+#ifdef BASE_ON_RFC
+		return NULL;
+#else
+		log_info("So, The problem may be caused by interoperability.\n");
+		log_info("But in this program, you can use these VSID\n");
+#endif
+	}
+
 	nvgre_i *v = (nvgre_i *)malloc(sizeof(nvgre_i));
 	if (v == NULL) {
 		log_pcrit("malloc");

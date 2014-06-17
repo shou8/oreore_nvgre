@@ -106,14 +106,12 @@ int inner_loop(nvgre_i *nvi)
 		if ((len = read(nvi->tap.sock, rp, rlen)) < 0)
 			log_perr("inner_loop.read");
 
-printf("len1: %d\n", len);
 		memset(nvh, 0, sizeof(struct nvgre_hdr));
 		nvh->flags.byte = NVGRE_FLAGS;
 		nvh->ver.byte = NVGRE_VERSION;
 		nvh->protocol_type = htons(NVGRE_PROTOCOLTYPE);
 		memcpy(nvh->vsid, nvi->vsid, VSID_BYTE);
 		len += sizeof(struct nvgre_hdr);
-printf("len2: %d\n", len);
 
 #ifdef DEBUG
 		if (get_status())
