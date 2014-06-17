@@ -2,5 +2,6 @@
 *.d
 test/rawgen
 test/udpgen
-vxconfig
+nvconfig
+nvgred
 core.*
