@@ -41,9 +41,8 @@ netdebug:
 #	@cd test && ${MAKE}
 
 clean:
-	@rm -f *.o ${DEPS} ${TARGET}
+	@rm -f *.o ${DEPS} ${TARGET} ${CONTROLER}
 	@cd test && ${MAKE} -s clean
-#	@rm -f *.o ${TARGET} ${CONTROLER}
 
 .PHONY: install-bin install-conf install-script
 
