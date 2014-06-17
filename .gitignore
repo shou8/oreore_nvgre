@@ -1,0 +1,6 @@
+*.o
+*.d
+test/rawgen
+test/udpgen
+vxconfig
+core.*
