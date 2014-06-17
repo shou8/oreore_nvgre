@@ -5,7 +5,7 @@ DEPS=$(OBJS:%.o=%.d)
 LDLIBS=-lpthread
 TARGET=nvgred
 #DEBUG_FLAG=-g -DDEBUG
-CFLAGS=-Wall -MMD
+CFLAGS=-Wall -O2 -MMD
 CONTROLER=nvconfig
 CONTROLER_OBJS=nvconfig.o log.o sock.o util.o netutil.o
 LDFLAGS=
