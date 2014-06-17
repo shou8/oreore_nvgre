@@ -112,12 +112,11 @@ static device create_nvgre_if(uint8_t *vsid)
 	uint32_t vsid32 = To32ex(vsid);
 
 	snprintf(tap.name, IF_NAME_LEN, "nvgre%"PRIu32, vsid32);
-	log_info("Tap interface \"%s\" is created (vsid: %"PRIu32").\n", tap.name, vsid32);
-
 	tap.sock = tap_alloc(tap.name);
 	if (tap.sock < 0) log_cexit("Cannot create tap interface\n");
 	tap_up(tap.name);
 	get_mac(tap.sock, tap.name, tap.hwaddr);
+	log_info("Tap interface \"%s\" is created (vsid: %"PRIu32").\n", tap.name, vsid32);
 
 	return tap;
 }
