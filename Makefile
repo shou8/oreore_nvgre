@@ -20,7 +20,7 @@ CONFIG_DST=/etc/nvgre.conf
 .SUFFIXES: .c .o
 
 .c.o:
-	${CC} ${CFLAGS} ${LDFLAGS} ${DEBUG_FLAG} -c $<
+	${CC} ${CFLAGS} ${DEBUG_FLAG} -c $< ${LDFLAGS}
 
 .PHONY: all debug clean test install uninstall
 
@@ -28,10 +28,10 @@ all:${TARGET} ${CONTROLER}
 -include $(DEPS)
 
 ${TARGET}:${OBJS}
-	${CC} ${CFLAGS} ${LDFLAGS} ${DEBUG_FLAG} -o $@ $^ ${LDLIBS}
+	${CC} ${CFLAGS} ${DEBUG_FLAG} -o $@ $^ ${LDLIBS} ${LDFLAGS}
 
 ${CONTROLER}:${CONTROLER_OBJS}
-	${CC} ${CFLAGS} ${LDFLAGS} ${DEBUG_FLAG} -o $@ $^ ${LDLIBS}
+	${CC} ${CFLAGS} ${DEBUG_FLAG} -o $@ $^ ${LDLIBS} ${LDFLAGS}
 
 debug:
 	${MAKE} DEBUG_FLAG="-g -DDEBUG" OBJS="${OBJS}"
