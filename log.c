@@ -9,7 +9,6 @@
 #include <errno.h>
 
 #include "base.h"
-#include "log.h"
 
 
 
@@ -46,6 +45,7 @@ void enable_syslog(void);
 void disable_syslog(void);
 void log_crit(const char *fmt, ...);
 void log_pcirt(const char *str);
+void log_pcexit(const char *str);
 
 
 
