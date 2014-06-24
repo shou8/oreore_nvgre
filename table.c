@@ -23,6 +23,7 @@ static unsigned int table_size = 0;
 
 static void to_head(list **root, list *lp);
 static list *find_list(list **table, uint8_t *eth_addr);
+static list **recreate_table(list **table);
 static void del_after(list *lp, int *i);
 
 
@@ -170,6 +171,24 @@ int del_data(list **table, uint8_t *hw_addr)
 
 list **clear_table_all(list **table)
 {
+	list **root;
+	list *p;
+
+	for (root = table; root-table < table_size; root++) {
+		for (p = *root; p != NULL; p = p->next) {
+			del_after(p, NULL);
+			if (p == *root) *root = NULL;
+			break;
+		}
+	}
+
+	return recreate_table(table);
+}
+
+
+
+static list **recreate_table(list **table)
+{
 	free(table);
 	return init_table(table_size);
 }
@@ -184,7 +203,7 @@ static void del_after(list *lp, int *i)
 	if (pre != NULL) pre->next = NULL;
 	free(lp->data);
 	free(lp);
-	(*i)++;
+	if (i != NULL) (*i)++;
 }
 
 

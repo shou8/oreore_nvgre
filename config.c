@@ -168,6 +168,8 @@ int set_config(struct config *conf) {
 			strncpy(nvgre.cmaddr, conf->value, DEFAULT_BUFLEN);
 			break;
 		case 1:
+			if (nvgre.if_name == NULL)
+				nvgre.if_name = (char *)malloc(sizeof(char) * DEFAULT_BUFLEN);
 			strncpy(nvgre.if_name, conf->value, DEFAULT_BUFLEN);
 			break;
 		case 2:

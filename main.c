@@ -116,7 +116,11 @@ int main(int argc, char *argv[])
 	}
 
 	if ( enable_D != 0 ) enable_debug();
-	if ( enable_i != 0 ) strncpy(nvgre.if_name, argv[enable_i], DEFAULT_BUFLEN);
+	if ( enable_i != 0 ) {
+		if (nvgre.if_name == NULL)
+			nvgre.if_name = (char *)malloc(sizeof(char) * DEFAULT_BUFLEN);
+		strncpy(nvgre.if_name, argv[enable_i], DEFAULT_BUFLEN);
+	}
 	if ( enable_m != 0 )
 		strncpy(nvgre.cmaddr, argv[enable_m], DEFAULT_BUFLEN);
 	else
