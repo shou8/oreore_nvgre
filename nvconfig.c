@@ -89,10 +89,18 @@ int main(int argc, char *argv[]) {
 			client_usage();
 	}
 
-	write(sock, wbuf, len);
+	if (write(sock, wbuf, len) < 0) {
+		fprintf(stderr, "ERROR: Write to socket\n");
+		perror("write");
+		return -1;
+	}
 
 	while ((len = read(sock, rbuf, CTL_BUF_LEN)) > 0)
-		write(STDOUT, rbuf, len);
+		if (write(STDOUT, rbuf, len) < 0) {
+			fprintf(stderr, "ERROR: Write to stdout\n");
+			perror("write");
+			return -1;
+		}
 
     return 0;
 }

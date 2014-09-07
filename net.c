@@ -80,7 +80,10 @@ int outer_loop(int soc)
 			continue;
 		}
 
-		write(nins->tap.sock, bp, len);
+		if (write(nins->tap.sock, bp, len) < 0) {
+			log_perr("write");
+			continue;
+		}
 
 #ifdef DEBUG
 		if (get_status())
