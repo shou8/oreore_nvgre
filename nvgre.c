@@ -54,13 +54,16 @@ int init_nvgre(void)
 	if ((nvgre.sock = init_gre_sock(nvgre.family)) < 0)
 		return -1;
 
+	struct sockaddr_storage *saddr = &nvgre.maddr;
 	switch (nvgre.family) {
 		case AF_INET:
-			if (join_mcast4_group(nvgre.sock, ((struct sockaddr_in *)(&nvgre.maddr))->sin_addr, nvgre.if_name) < 0)
+			//if (join_mcast4_group(nvgre.sock, ((struct sockaddr_in *)(&nvgre.maddr))->sin_addr, nvgre.if_name) < 0)
+			if (join_mcast4_group(nvgre.sock, ((struct sockaddr_in *)saddr)->sin_addr, nvgre.if_name) < 0)
 			return -1;
 			break;
 		case AF_INET6:
-			if (join_mcast6_group(nvgre.sock, ((struct sockaddr_in6 *)(&nvgre.maddr))->sin6_addr, nvgre.if_name) < 0)
+			//if (join_mcast6_group(nvgre.sock, ((struct sockaddr_in6 *)(&nvgre.maddr))->sin6_addr, nvgre.if_name) < 0)
+			if (join_mcast6_group(nvgre.sock, ((struct sockaddr_in6 *)saddr)->sin6_addr, nvgre.if_name) < 0)
 			return -1;
 			break;
 		default:

@@ -10,6 +10,8 @@ CONTROLER=nvconfig
 CONTROLER_OBJS=nvconfig.o log.o sock.o util.o netutil.o
 LDFLAGS=
 
+OS_DIST=$(shell head -1 /etc/issue|cut -d ' ' -f1)
+
 PREFIX=/usr/local/bin
 SCRIPT_DIR=script
 LSB_SCRIPT=nvgred
@@ -25,6 +27,10 @@ CONFIG_DST=/etc/nvgre.conf
 .PHONY: all debug clean test install uninstall
 
 all:${TARGET} ${CONTROLER}
+ifeq (${OSTYPE}, "linux-gnu")
+	echo "Not supported your OS: ${OSTYPE}"
+	exit 1
+endif
 -include $(DEPS)
 
 ${TARGET}:${OBJS}
@@ -51,7 +57,16 @@ install-bin:all
 	install -p -m 755 ${CONTROLER} ${PREFIX}/${CONTROLER}
 
 install-script:
-	install -p -m 755 ${SCRIPT_DIR}/${LSB_SCRIPT} ${INIT_DIR}/${LSB_SCRIPT}
+ifeq (${OS_DIST}, CentOS)
+	install -p -m 755 ${SCRIPT_DIR}/${LSB_SCRIPT}.centos ${INIT_DIR}/${LSB_SCRIPT}
+else
+ifeq (${OS_DIST}, Debian)
+	install -p -m 755 ${SCRIPT_DIR}/${LSB_SCRIPT}.debian ${INIT_DIR}/${LSB_SCRIPT}
+else
+	@echo "Not supported your OS"
+	@exit 1
+endif
+endif
 
 install-conf:
 	install -p -m 644 ${CONFIG_SRC} ${CONFIG_DST}
