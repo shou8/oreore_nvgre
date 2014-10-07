@@ -3,7 +3,7 @@
 
 
 # LSB Script functions initialization
-. /lib/lsb/init-functions
+. /etc/rc.d/init.d/functions
 
 
 
@@ -26,37 +26,40 @@ fi
 
 
 start_func() {
+	echo -n "Starting ${PROC} daemon:"
 	if [ -f ${PID_FILE} ]; then
-		log_action_msg "Already running, PID: `cat ${PID_FILE}`"
+		failure
+		echo
+		echo "Already running, PID: `/bin/cat ${PID_FILE}`"
 		exit 1
 	fi
 
-	log_daemon_msg "Starting" ${PROC} || true
-	/sbin/start-stop-daemon --start --quiet --oknodo --pidfile ${PID_FILE} --exec ${SERVER} -- -d && log_success_msg || log_failure_msg
-	if [ -f ${PID_FILE} ]; then
-		log_action_msg "Started PID: `cat ${PID_FILE}`"
+	${SERVER} -d -p ${PID_FILE}
+	if [ $? = 0 ]; then
+		success
+	else
+		failure
 	fi
+	echo
 }
 
 
 
 stop_func() {
-	log_daemon_msg "Stopping" ${PROC}
+	echo -n "Stopping ${PROC} daemon:"
 	if [ -f ${PID_FILE} ]; then
-		/sbin/start-stop-daemon --stop --quiet --oknodo --pidfile ${PID_FILE} && log_success_msg || log_failure_msg
+		killproc ${SERVER} && success || failure
 		rm -f ${PID_FILE} > /dev/null 2>&1
 	else
-		log_failure_msg
+		failure
 	fi
+	echo
 }
 
 
 
 status_func() {
-	status_of_proc -p ${PID_FILE} ${SERVER} ${PROC}
-	if [ $? = 0 ]; then
-		log_action_msg "Running PID: `cat ${PID_FILE}`"
-	fi
+	status -p ${PID_FILE} ${PROC}
 }
 
 
