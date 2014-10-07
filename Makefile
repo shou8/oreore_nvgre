@@ -63,8 +63,7 @@ else
 ifeq (${OS_DIST}, Debian)
 	install -p -m 755 ${SCRIPT_DIR}/${LSB_SCRIPT}.debian ${INIT_DIR}/${LSB_SCRIPT}
 else
-	@echo "Not supported your OS"
-	@exit 1
+	install -p -m 755 ${SCRIPT_DIR}/${LSB_SCRIPT} ${INIT_DIR}/${LSB_SCRIPT}
 endif
 endif
 
