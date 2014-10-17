@@ -4,6 +4,7 @@
 #include <unistd.h>
 #include <getopt.h>
 #include <pwd.h>
+#include <errno.h>
 
 #include "base.h"
 #include "util.h"
@@ -89,10 +90,17 @@ int main(int argc, char *argv[]) {
 			client_usage();
 	}
 
-	write(sock, wbuf, len);
+	if (write(sock, wbuf, len) < 0) {
+		perror("ERROR: ");
+		exit(EXIT_FAILURE);
+	}
 
-	while ((len = read(sock, rbuf, CTL_BUF_LEN)) > 0)
-		write(STDOUT, rbuf, len);
+	while ((len = read(sock, rbuf, CTL_BUF_LEN)) > 0) {
+		if (write(STDOUT, rbuf, len) < 0) {
+			perror("ERROR: ");
+			exit(EXIT_FAILURE);
+		}
+	}
 
     return 0;
 }
