@@ -16,10 +16,10 @@
 
 int init_gre_sock(sa_family_t family);
 int init_unix_sock(char *path, int csflag);
-int join_mcast4_group(int sock, struct in_addr maddr, char *if_name);
-int leave_mcast4_group(int sock, struct in_addr maddr, char *if_name);
-int join_mcast6_group(int sock, struct in6_addr maddr, char *if_name);
-int leave_mcast6_group(int sock, struct in6_addr maddr, char *if_name);
+int join_mcast4_group(int sock, struct in_addr *maddr, char *if_name);
+int leave_mcast4_group(int sock, struct in_addr *maddr, char *if_name);
+int join_mcast6_group(int sock, struct in6_addr *maddr, char *if_name);
+int leave_mcast6_group(int sock, struct in6_addr *maddr, char *if_name);
 
 
 
