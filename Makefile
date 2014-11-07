@@ -10,7 +10,9 @@ CONTROLER=nvconfig
 CONTROLER_OBJS=nvconfig.o log.o sock.o util.o netutil.o
 LDFLAGS=
 
+ifeq (${OSTYPE}, "linux-gnu")
 OS_DIST=$(shell head -1 /etc/issue|cut -d ' ' -f1)
+endif
 
 PREFIX=/usr/local/bin
 SCRIPT_DIR=script
