@@ -56,11 +56,11 @@ int init_nvgre(void)
 
 	switch (nvgre.family) {
 		case AF_INET:
-			if (join_mcast4_group(nvgre.sock, ((struct sockaddr_in *)(&nvgre.maddr))->sin_addr, nvgre.if_name) < 0)
+			if (join_mcast4_group(nvgre.sock, &((struct sockaddr_in *)(&nvgre.maddr))->sin_addr, nvgre.if_name) < 0)
 			return -1;
 			break;
 		case AF_INET6:
-			if (join_mcast6_group(nvgre.sock, ((struct sockaddr_in6 *)(&nvgre.maddr))->sin6_addr, nvgre.if_name) < 0)
+			if (join_mcast6_group(nvgre.sock, &((struct sockaddr_in6 *)(&nvgre.maddr))->sin6_addr, nvgre.if_name) < 0)
 			return -1;
 			break;
 		default:
@@ -184,9 +184,9 @@ void del_nvi(char *buf, uint8_t *vsid)
 
 		if ( i != NUMOF_UINT8 || j != NUMOF_UINT8 || k != NUMOF_UINT8) {
 			if (family == AF_INET)
-				leave_mcast4_group(nvgre.sock, ((struct sockaddr_in *)(&nvgre.nvi[vsid[0]][vsid[1]][vsid[2]]->maddr))->sin_addr, nvgre.if_name);
+				leave_mcast4_group(nvgre.sock, &((struct sockaddr_in *)(&nvgre.nvi[vsid[0]][vsid[1]][vsid[2]]->maddr))->sin_addr, nvgre.if_name);
 			else
-				leave_mcast6_group(nvgre.sock, ((struct sockaddr_in6 *)(&nvgre.nvi[vsid[0]][vsid[1]][vsid[2]]->maddr))->sin6_addr, nvgre.if_name);
+				leave_mcast6_group(nvgre.sock, &((struct sockaddr_in6 *)(&nvgre.nvi[vsid[0]][vsid[1]][vsid[2]]->maddr))->sin6_addr, nvgre.if_name);
 		}
 	}
 

@@ -3,7 +3,7 @@ OBJS=main.o log.o sock.o net.o util.o netutil.o table.o tap.o nvgre.o cmd.o conf
 SRCS=${OBJS:%.o=%.c}
 DEPS=$(OBJS:%.o=%.d)
 LDLIBS=-lpthread
-TARGET=nvgred
+DAEMON=nvgred
 #DEBUG_FLAG=-g -DDEBUG
 CFLAGS=-Wall -O2 -MMD
 CONTROLER=nvconfig
@@ -28,18 +28,18 @@ CONFIG_DST=/etc/nvgre.conf
 
 .PHONY: all debug clean test install uninstall
 
-all:${TARGET} ${CONTROLER}
+all:${DAEMON} ${CONTROLER}
 ifeq (${OSTYPE}, "linux-gnu")
 	echo "Not supported your OS: ${OSTYPE}"
 	exit 1
 endif
 -include $(DEPS)
 
-${TARGET}:${OBJS}
+${DAEMON}:${OBJS}
 	${CC} ${CFLAGS} ${DEBUG_FLAG} -o $@ $^ ${LDLIBS} ${LDFLAGS}
 
 ${CONTROLER}:${CONTROLER_OBJS}
-	${CC} ${CFLAGS} ${DEBUG_FLAG} -o $@ $^ ${LDLIBS} ${LDFLAGS}
+	${CC} ${CFLAGS} ${DEBUG_FLAG} -o $@ $^ ${LDFLAGS}
 
 debug:
 	${MAKE} DEBUG_FLAG="-g -DDEBUG" OBJS="${OBJS}"
@@ -49,13 +49,13 @@ netdebug:
 #	@cd test && ${MAKE}
 
 clean:
-	@rm -f *.o ${DEPS} ${TARGET} ${CONTROLER}
+	@rm -f *.o ${DEPS} ${DAEMON} ${CONTROLER}
 	@cd test && ${MAKE} -s clean
 
 .PHONY: install-bin install-conf install-script
 
 install-bin:all
-	install -p -m 755 ${TARGET} ${PREFIX}/${TARGET}
+	install -p -m 755 ${DAEMON} ${PREFIX}/${DAEMON}
 	install -p -m 755 ${CONTROLER} ${PREFIX}/${CONTROLER}
 
 install-script:
@@ -75,6 +75,6 @@ install-conf:
 install: install-bin install-script install-conf
 
 uninstall:
-	@rm -f ${PREFIX}/${TARGET}
+	@rm -f ${PREFIX}/${DAEMON}
 	@rm -f ${PREFIX}/${CONTROLER}
 	@rm -f ${INIT_DIR}/${LSB_SCRIPT}

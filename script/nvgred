@@ -74,7 +74,7 @@ case "$1" in
 		stop_func
 	;;
 	*)
-		echo "Usage: /etc/init.d/nvgred {start|stop|status}"
+		echo "Usage: /etc/init.d/nvgred {start|stop|status|restart}"
 	;;
 esac
 
