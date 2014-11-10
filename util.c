@@ -72,3 +72,6 @@ int get32and8arr(char *buf, char *str, uint32_t *val, uint8_t *arr) {
 
 	return SUCCESS;
 }
+
+
+
