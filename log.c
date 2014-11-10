@@ -27,7 +27,13 @@ static int _syslog_mode = SYSLOG_ENABLE;
 
 // Using for message information
 static int _pid;						// Process ID
+#ifdef OS_DARWIN
+#include <limits.h>
+static char _h_name[_POSIX_HOST_NAME_MAX];
+#else
 static char _h_name[HOST_NAME_MAX];		// Host Name
+#endif
+
 static int _debug_mode = DEBUG_DISABLE;
 
 static char line[LOG_LINELEN];

@@ -10,7 +10,10 @@ CONTROLER=nvconfig
 CONTROLER_OBJS=nvconfig.o log.o sock.o util.o netutil.o
 LDFLAGS=
 
-ifeq (${OSTYPE}, "linux-gnu")
+OSTYPE=OS_$(shell uname -s | tr 'a-z' 'A-Z')
+CFLAGS+=-D${OSTYPE}
+
+ifeq (${OSTYPE}, "linux")
 OS_DIST=$(shell head -1 /etc/issue|cut -d ' ' -f1)
 endif
 
@@ -29,10 +32,6 @@ CONFIG_DST=/etc/nvgre.conf
 .PHONY: all debug clean test install uninstall
 
 all:${DAEMON} ${CONTROLER}
-ifeq (${OSTYPE}, "linux-gnu")
-	echo "Not supported your OS: ${OSTYPE}"
-	exit 1
-endif
 -include $(DEPS)
 
 ${DAEMON}:${OBJS}
