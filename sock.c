@@ -9,6 +9,10 @@
 #include <arpa/inet.h>
 #include <net/if.h>
 
+#ifndef OS_LINUX
+#include <netinet/in.h>
+#endif
+
 #include "base.h"
 #include "log.h"
 #include "netutil.h"
@@ -89,13 +93,13 @@ int init_unix_sock(char *dom, int csflag) {
  * Multicast Settings
  */
 
-int join_mcast4_group(int sock, struct in_addr maddr, char *if_name) {
+int join_mcast4_group(int sock, struct in_addr *maddr, char *if_name) {
 
 	struct ip_mreq mreq;
 	char maddr_s[16];
 
 	memset(&mreq, 0, sizeof(mreq));
-	mreq.imr_multiaddr = maddr;
+	mreq.imr_multiaddr = *maddr;
 	mreq.imr_interface = (if_name != NULL) ? get_addr(if_name) : inaddr_any;
 
 #ifdef DEBUG
@@ -128,13 +132,13 @@ int join_mcast4_group(int sock, struct in_addr maddr, char *if_name) {
 
 
 
-int leave_mcast4_group(int sock, struct in_addr maddr, char *if_name) {
+int leave_mcast4_group(int sock, struct in_addr *maddr, char *if_name) {
 
 	struct ip_mreq mreq;
 	char maddr_s[16];
 
 	memset(&mreq, 0, sizeof(mreq));
-	mreq.imr_multiaddr = maddr;
+	mreq.imr_multiaddr = *maddr;
 	mreq.imr_interface = get_addr(if_name);
 
 #ifdef DEBUG
@@ -156,13 +160,13 @@ int leave_mcast4_group(int sock, struct in_addr maddr, char *if_name) {
 
 
 
-int join_mcast6_group(int sock, struct in6_addr maddr, char *if_name) {
+int join_mcast6_group(int sock, struct in6_addr *maddr, char *if_name) {
 
 	struct ipv6_mreq mreq6;
 	char maddr_s[16];
 
 	memset(&mreq6, 0, sizeof(mreq6));
-	mreq6.ipv6mr_multiaddr = maddr;
+	mreq6.ipv6mr_multiaddr = *maddr;
 	mreq6.ipv6mr_interface = (if_name != NULL) ? if_nametoindex(if_name) : 0;
 
 #ifdef DEBUG
@@ -180,7 +184,11 @@ int join_mcast6_group(int sock, struct in6_addr maddr, char *if_name) {
 		return -1;
 	}
 
+#ifdef OS_LINUX
 	if (setsockopt(sock, IPPROTO_IPV6, IPV6_ADD_MEMBERSHIP, (char *)&mreq6, sizeof(mreq6)) < 0) {
+#else
+	if (setsockopt(sock, IPPROTO_IPV6, IPV6_JOIN_GROUP, (char *)&mreq6, sizeof(mreq6)) < 0) {
+#endif
 		log_perr("setsockopt");
 		log_err("Fail to set IPV6_ADD_MEMBERSHIP\n");
 		log_err("Interface : %u\n", mreq6.ipv6mr_interface);
@@ -192,13 +200,13 @@ int join_mcast6_group(int sock, struct in6_addr maddr, char *if_name) {
 
 
 
-int leave_mcast6_group(int sock, struct in6_addr maddr, char *if_name) {
+int leave_mcast6_group(int sock, struct in6_addr *maddr, char *if_name) {
 
 	struct ipv6_mreq mreq6;
 	char maddr_s[16];
 
 	memset(&mreq6, 0, sizeof(mreq6));
-	mreq6.ipv6mr_multiaddr = maddr;
+	mreq6.ipv6mr_multiaddr = *maddr;
 	mreq6.ipv6mr_interface = (if_name != NULL) ? if_nametoindex(if_name) : 0;
 
 #ifdef DEBUG
@@ -206,7 +214,11 @@ int leave_mcast6_group(int sock, struct in6_addr maddr, char *if_name) {
 	log_debug("Join mcast_addr6 : %s\n", maddr_s);
 #endif
 
+#ifdef OS_LINUX
 	if (setsockopt(sock, IPPROTO_IPV6, IPV6_DROP_MEMBERSHIP, (char *)&mreq6.ipv6mr_interface, sizeof(mreq6.ipv6mr_interface)) < 0) {
+#else
+	if (setsockopt(sock, IPPROTO_IPV6, IPV6_LEAVE_GROUP, (char *)&mreq6.ipv6mr_interface, sizeof(mreq6.ipv6mr_interface)) < 0) {
+#endif
 		inet_ntop(AF_INET6, &mreq6.ipv6mr_multiaddr, maddr_s, sizeof(maddr_s));
 		log_perr("setsockopt");
 		log_err("Fail to set IPV6_DROP_MEMBERSHIP\n");

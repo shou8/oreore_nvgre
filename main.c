@@ -175,8 +175,7 @@ void usage(char *bin) {
 	fprintf(stderr, "        -h                       : Show this help\n");
 	fprintf(stderr, "        -i <interface>           : Set multicast interface\n");
 	fprintf(stderr, "        -m <multicast address>   : Set multicast address\n");
-	fprintf(stderr, "        -p <port number>         : Set port number\n");
-	fprintf(stderr, "        -P <Path to PID file>    : Set path to PID file\n");
+	fprintf(stderr, "        -p <Path to PID file>    : Set path to PID file\n");
 	fprintf(stderr, "        -s <Path to Unix Socket> : Set path to unix socket\n");
 	fprintf(stderr, "        -v                       : Show version\n");
 	fprintf(stderr, "\n");

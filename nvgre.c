@@ -36,7 +36,7 @@ nvgred nvgre = {
 
 
 static void init_nvi(void);
-static device create_nvgre_if(uint8_t *vsid);
+static device *create_nvgre_if(uint8_t *vsid);
 
 
 
@@ -56,11 +56,11 @@ int init_nvgre(void)
 
 	switch (nvgre.family) {
 		case AF_INET:
-			if (join_mcast4_group(nvgre.sock, ((struct sockaddr_in *)(&nvgre.maddr))->sin_addr, nvgre.if_name) < 0)
+			if (join_mcast4_group(nvgre.sock, &((struct sockaddr_in *)(&nvgre.maddr))->sin_addr, nvgre.if_name) < 0)
 			return -1;
 			break;
 		case AF_INET6:
-			if (join_mcast6_group(nvgre.sock, ((struct sockaddr_in6 *)(&nvgre.maddr))->sin6_addr, nvgre.if_name) < 0)
+			if (join_mcast6_group(nvgre.sock, &((struct sockaddr_in6 *)(&nvgre.maddr))->sin6_addr, nvgre.if_name) < 0)
 			return -1;
 			break;
 		default:
@@ -106,17 +106,23 @@ void destroy_nvgre(void)
 
 
 
-static device create_nvgre_if(uint8_t *vsid)
+static device *create_nvgre_if(uint8_t *vsid)
 {
-	device tap;
 	uint32_t vsid32 = To32ex(vsid);
+	device *tap = (device *)malloc(sizeof(device));
+	memset(tap, 0, sizeof(device));
 
-	snprintf(tap.name, IF_NAME_LEN, "nvgre%"PRIu32, vsid32);
-	tap.sock = tap_alloc(tap.name);
-	if (tap.sock < 0) log_cexit("Cannot create tap interface\n");
-	tap_up(tap.name);
-	get_mac(tap.sock, tap.name, tap.hwaddr);
-	log_info("Tap interface \"%s\" is created (vsid: %"PRIu32").\n", tap.name, vsid32);
+	snprintf(tap->name, IF_NAME_LEN, TAP_BASE_NAME"%"PRIu32, vsid32);
+	tap->sock = tap_alloc(tap->name);
+	if (tap->sock < 0) {
+		log_crit("Cannot create tap interface\n");
+		free(tap);
+		return NULL;
+	}
+
+	tap_up(tap->name);
+	get_mac(tap->sock, tap->name, tap->hwaddr);
+	log_info("Tap interface \"%s\" is created (vsid: %"PRIu32").\n", tap->name, vsid32);
 
 	return tap;
 }
@@ -126,18 +132,17 @@ static device create_nvgre_if(uint8_t *vsid)
 nvgre_i *add_nvi(char *buf, uint8_t *vsid, struct sockaddr_storage maddr)
 {
 	if (vsid[0] == 0xFF && vsid[1] == 0xFF && vsid[2] == 0xFF) {
-		log_info("The VSID 0xFFFFFF is reserved by protocol.\n");
-		log_info("This VSID is used by vendor (actually, it is not used in this program\n");
+		log_binfo(buf, "The VSID 0xFFFFFF is reserved by protocol.\n");
+		log_binfo(buf, "This VSID is used by vendor (actually, it is not used in this program\n");
 		return NULL;
 	}
 
 	if (vsid[0] == 0 && vsid[1] < 0x10) {
-		log_info("The VSID (0x0 - 0xFFF) is reserved by protocol.\n");
+		log_binfo(buf, "The VSID (0x0 - 0xFFF) is reserved by protocol.\n");
 #ifdef BASE_ON_RFC
 		return NULL;
 #else
-		log_info("So, The problem may be caused by interoperability.\n");
-		log_info("But in this program, you can use these VSID\n");
+		log_binfo(buf, "So, The problem may be caused by interoperability.\nBut in this program, you can use these VSID\n");
 #endif
 	}
 
@@ -156,6 +161,11 @@ nvgre_i *add_nvi(char *buf, uint8_t *vsid, struct sockaddr_storage maddr)
 	}
 
 	v->tap = create_nvgre_if(vsid);
+	if (v->tap == NULL) {
+		free(v);
+		return NULL;
+	}
+
 	v->timeout = nvgre.timeout;
 	v->maddr = maddr;
 
@@ -184,13 +194,14 @@ void del_nvi(char *buf, uint8_t *vsid)
 
 		if ( i != NUMOF_UINT8 || j != NUMOF_UINT8 || k != NUMOF_UINT8) {
 			if (family == AF_INET)
-				leave_mcast4_group(nvgre.sock, ((struct sockaddr_in *)(&nvgre.nvi[vsid[0]][vsid[1]][vsid[2]]->maddr))->sin_addr, nvgre.if_name);
+				leave_mcast4_group(nvgre.sock, &((struct sockaddr_in *)(&nvgre.nvi[vsid[0]][vsid[1]][vsid[2]]->maddr))->sin_addr, nvgre.if_name);
 			else
-				leave_mcast6_group(nvgre.sock, ((struct sockaddr_in6 *)(&nvgre.nvi[vsid[0]][vsid[1]][vsid[2]]->maddr))->sin6_addr, nvgre.if_name);
+				leave_mcast6_group(nvgre.sock, &((struct sockaddr_in6 *)(&nvgre.nvi[vsid[0]][vsid[1]][vsid[2]]->maddr))->sin6_addr, nvgre.if_name);
 		}
 	}
 
-	close(nvgre.nvi[vsid[0]][vsid[1]][vsid[2]]->tap.sock);
+	close(nvgre.nvi[vsid[0]][vsid[1]][vsid[2]]->tap->sock);
+	free(nvgre.nvi[vsid[0]][vsid[1]][vsid[2]]->tap);
 	free(nvgre.nvi[vsid[0]][vsid[1]][vsid[2]]);
 	nvgre.nvi[vsid[0]][vsid[1]][vsid[2]] = NULL;
 }

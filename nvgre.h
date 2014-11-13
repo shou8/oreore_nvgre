@@ -21,7 +21,7 @@ typedef struct _nvgre_instance_ {
 
 	pthread_t th;
 	uint8_t vsid[VSID_BYTE];
-	device tap;
+	device *tap;
 	list **table;
 	struct sockaddr_storage maddr;
 	int timeout;				// Specific

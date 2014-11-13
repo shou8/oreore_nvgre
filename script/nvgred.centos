@@ -2,10 +2,16 @@
 
 
 
+# LSB Script functions initialization
+. /etc/rc.d/init.d/functions
+
+
+
+PROC=nvgred
 PREFIX=/usr/local/bin
 CLIENT=${PREFIX}/nvconfig
-SERVER=${PREFIX}/nvgred
-PID_FILE=/var/run/nvgred.pid
+SERVER=${PREFIX}/${PROC}
+PID_FILE=/var/run/${PROC}.pid
 
 
 
@@ -20,41 +26,40 @@ fi
 
 
 start_func() {
-
+	echo -n "Starting ${PROC} daemon:"
 	if [ -f ${PID_FILE} ]; then
-		echo "Already running, PID: `cat ${PID_FILE}`"
+		failure
+		echo
+		echo "Already running, PID: `/bin/cat ${PID_FILE}`"
 		exit 1
 	fi
 
-	${SERVER} -d
-	if [ -f ${PID_FILE} ]; then
-		echo "Started: `cat ${PID_FILE}`"
+	${SERVER} -d -p ${PID_FILE}
+	if [ $? = 0 ]; then
+		success
 	else
-		echo "Cannot start nvgred"
+		failure
 	fi
+	echo
 }
 
 
 
 stop_func() {
-
+	echo -n "Stopping ${PROC} daemon:"
 	if [ -f ${PID_FILE} ]; then
-		kill `cat ${PID_FILE}` > /dev/null 2>&1
+		killproc ${SERVER} && success || failure
 		rm -f ${PID_FILE} > /dev/null 2>&1
+	else
+		failure
 	fi
-
-	echo "Stopped"
+	echo
 }
 
 
 
 status_func() {
-
-	if [ -f ${PID_FILE} ]; then
-		echo "Running, PID: `cat ${PID_FILE}`"
-	else
-		echo "Stopping"
-	fi
+	status -p ${PID_FILE} ${PROC}
 }
 
 

@@ -4,6 +4,7 @@
 #include <unistd.h>
 #include <getopt.h>
 #include <pwd.h>
+#include <errno.h>
 
 #include "base.h"
 #include "util.h"
