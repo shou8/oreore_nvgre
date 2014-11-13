@@ -6,6 +6,9 @@
 #include <sys/socket.h>
 #include <sys/types.h>
 #include <netdb.h>
+#ifndef OS_LINUX
+#include <netinet/in.h>
+#endif
 
 
 

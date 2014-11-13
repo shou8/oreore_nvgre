@@ -7,7 +7,11 @@
 
 #define DAEMON_NAME		"nvgred"
 #define CONTROLLER_NAME	"nvconfig"
+#ifdef OS_LINUX
 #define TAP_BASE_NAME	"nvgre"
+#else
+#define TAP_BASE_NAME	"tap"
+#endif
 
 /* MAC Address Length */
 #define MAC_LEN_BITS	48

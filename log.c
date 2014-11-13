@@ -27,7 +27,7 @@ static int _syslog_mode = SYSLOG_ENABLE;
 
 // Using for message information
 static int _pid;						// Process ID
-#ifdef OS_DARWIN
+#ifndef OS_LINUX
 #include <limits.h>
 static char _h_name[_POSIX_HOST_NAME_MAX];
 #else
@@ -249,6 +249,28 @@ void log_pcexit(const char *str) {
 		_print_log(LOG_CRIT, "%s: %s\n", str, strerror(errno));
 
 	exit(EXIT_FAILURE);
+}
+
+
+
+void log_binfo(char *buf, const char *fmt, ...) {
+
+	va_list ap;
+	va_start(ap, fmt);
+	_print_log_v(LOG_INFO, fmt, ap);
+	if (buf != NULL) strncpy(buf, line, LOG_LINELEN);
+	va_end(ap);
+}
+
+
+
+void log_bwarn(char *buf, const char *fmt, ...) {
+
+	va_list ap;
+	va_start(ap, fmt);
+	_print_log_v(LOG_WARNING, fmt, ap);
+	if (buf != NULL) strncpy(buf, line, LOG_LINELEN);
+	va_end(ap);
 }
 
 

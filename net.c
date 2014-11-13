@@ -5,6 +5,10 @@
 #include <string.h>
 #include <inttypes.h>
 #include <sys/socket.h>
+#ifndef OS_LINUX
+#include <sys/types.h>
+#include <netinet/in.h>
+#endif
 #include <netinet/ip.h>
 
 #include "base.h"
@@ -45,8 +49,15 @@ int outer_loop(int soc)
 			log_perr("recvfrom");
 
 		/* IP */
+/*
+ * Linux Only
+ */
+/*
 		struct iphdr *iphdr = (struct iphdr *)buf;
 		size_t iph_len = iphdr->ihl * 4;
+ */
+		struct ip *iphdr = (struct ip *)buf;
+		size_t iph_len = (size_t)iphdr->ip_hl * 4;
 		bp = buf + iph_len;
 		len -= iph_len;
 
@@ -80,7 +91,7 @@ int outer_loop(int soc)
 			continue;
 		}
 
-		if (write(nins->tap.sock, bp, len) < 0)
+		if (write(nins->tap->sock, bp, len) < 0)
 			log_perr("write");
 
 #ifdef DEBUG
@@ -104,7 +115,7 @@ int inner_loop(nvgre_i *nvi)
 
 	while (1)
 	{
-		if ((len = read(nvi->tap.sock, rp, rlen)) < 0)
+		if ((len = read(nvi->tap->sock, rp, rlen)) < 0)
 			log_perr("inner_loop.read");
 
 		memset(nvh, 0, sizeof(struct nvgre_hdr));

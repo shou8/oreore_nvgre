@@ -3,6 +3,7 @@
 
 
 #include <inttypes.h>
+#include <sys/types.h>
 #include <net/ethernet.h>
 #include <sys/socket.h>
 
@@ -33,6 +34,5 @@ uint16_t checksum(uint16_t *buf, int bufsz);
  * Minimum of ARP cache time is 1 sec in Linux.
  * Actually, it is written in /proc/sys/net/ipv4/neigh/ethX/locktime.
  * But, I really measured 7 mins on Debian.
- * You can 
  *
  */

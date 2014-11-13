@@ -9,6 +9,12 @@
 #include <sys/socket.h>
 #include <netdb.h>
 #include <arpa/inet.h>
+#ifndef OS_LINUX
+#include <sys/types.h>
+#include <ifaddrs.h>
+#include <net/if_dl.h>
+#include <net/if_types.h>
+#endif
 
 #include "netutil.h"
 #include "log.h"
@@ -96,8 +102,9 @@ struct in_addr get_addr(char *if_name)
 
 uint8_t *get_mac(int sock, char *name, uint8_t *hwaddr)
 {
+#ifdef OS_LINUX
+//	uint8_t *addr;
 	struct ifreq ifreq;
-	uint8_t *addr;
 
 	strncpy(ifreq.ifr_name, name, sizeof(ifreq.ifr_name) - 1);
 	if ( ioctl(sock, SIOCGIFHWADDR, &ifreq) == -1 ) {
@@ -105,9 +112,26 @@ uint8_t *get_mac(int sock, char *name, uint8_t *hwaddr)
 		close(sock);
 		return NULL;
 	} else {
-		addr = (uint8_t *)&ifreq.ifr_hwaddr.sa_data;
-		memcpy(hwaddr, addr, MAC_LEN);
+//		addr = (uint8_t *)&ifreq.ifr_hwaddr.sa_data;
+//		memcpy(hwaddr, addr, MAC_LEN);
+		memcpy(hwaddr, &ifreq.ifr_hwaddr.sa_data, MAC_LEN);
 	}
+#else
+	struct ifaddrs *ifa_list, *ifa;
+	if ( getifaddrs(&ifa_list) < 0 ) {
+		log_pcrit("getifaddrs");
+		close(sock);
+		return NULL;
+	}
+	for (ifa = ifa_list; ifa; ifa = ifa->ifa_next) {
+		struct sockaddr_dl *dl = (struct sockaddr_dl *)ifa->ifa_addr;
+		if ( dl->sdl_family == AF_LINK && dl->sdl_type == IFT_ETHER &&
+				strncmp(name, ifa->ifa_name, dl->sdl_nlen) == 0 ) {
+			memcpy(hwaddr, LLADDR(dl), MAC_LEN);
+			break;
+		}
+	}
+#endif
 
 	return hwaddr;
 }

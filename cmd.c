@@ -612,7 +612,7 @@ static int _cmd_info(int soc, int cmd_i, int argc, char *argv[]) {
 		}
 
 		_soc_printf(soc, CTL_BUFLEN, "----- vsid: %s information -----\n", vsid_s);
-		_soc_printf(soc, CTL_BUFLEN, "%-"INFO_PAD"s: %s\n", "Tap interface", nvgre.nvi[vsid[0]][vsid[1]][vsid[2]]->tap.name);
+		_soc_printf(soc, CTL_BUFLEN, "%-"INFO_PAD"s: %s\n", "Tap interface", nvgre.nvi[vsid[0]][vsid[1]][vsid[2]]->tap->name);
 		_soc_printf(soc, CTL_BUFLEN, "%-"INFO_PAD"s: %s\n", "Address family", (nvgre.nvi[vsid[0]][vsid[1]][vsid[2]]->maddr.ss_family == AF_INET) ? "IPv4" : "IPv6");
 		_soc_printf(soc, CTL_BUFLEN, "%-"INFO_PAD"s: %s\n", "Multicast IP address", get_straddr(&nvgre.nvi[vsid[0]][vsid[1]][vsid[2]]->maddr));
 		_soc_printf(soc, CTL_BUFLEN, "%-"INFO_PAD"s: %d\n", "Cache time out", nvgre.nvi[vsid[0]][vsid[1]][vsid[2]]->timeout);

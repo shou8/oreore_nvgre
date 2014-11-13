@@ -34,6 +34,8 @@ void log_pcrit(const char *str);
 /*
  * Logging and Copy to "buf"
  */
+void log_binfo(char *buf, const char *fmt, ...);
+void log_bwarn(char *buf, const char *fmt, ...);
 void log_berr(char *buf, const char *fmt, ...);
 void log_bperr(char *buf, const char *str);
 
