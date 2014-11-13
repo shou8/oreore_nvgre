@@ -87,8 +87,8 @@ static int _cmd_len = sizeof(_cmd_t) / sizeof(struct cmd_entry);
 
 
 
-void ctl_loop(char *dom) {
-
+void ctl_loop(char *dom)
+{
 	int usoc, asoc, len;
 	char rbuf[CTL_BUFLEN];
 	char wbuf[CTL_BUFLEN];
@@ -139,8 +139,8 @@ void ctl_loop(char *dom) {
  * If inner_loop is not infinite loop,
  * you have to use "malloc" to allocate to heap area.
  */
-void *inner_loop_thread(void *args) {
-
+void *inner_loop_thread(void *args)
+{
 	uint8_t vsid[VSID_BYTE];
 	memcpy(vsid, (uint8_t *)args, VSID_BYTE);
 	free(args);
@@ -156,8 +156,8 @@ void *inner_loop_thread(void *args) {
 
 
 
-int order_parse(char *rbuf, int soc) {
-
+int order_parse(char *rbuf, int soc)
+{
 	int i, argc;
 	char *p;
 	char *argv[CTL_BUFLEN];
@@ -178,8 +178,8 @@ int order_parse(char *rbuf, int soc) {
 
 
 
-int _cmd_usage(int soc, int cmd_i) {
-
+int _cmd_usage(int soc, int cmd_i)
+{
 	_soc_printf(soc, CTL_BUFLEN, "Usage: %s %s %s\n", CONTROLLER_NAME, _cmd_t[cmd_i].name, (_cmd_t[cmd_i].arg == NULL) ? "":_cmd_t[cmd_i].arg);
 	return CMD_FAILED;
 }
@@ -196,8 +196,8 @@ int _cmd_usage(int soc, int cmd_i) {
 
 
 
-int cmd_create_nvi(int soc, int cmd_i, int argc, char *argv[]) {
-
+int cmd_create_nvi(int soc, int cmd_i, int argc, char *argv[])
+{
 	if (argc < 2) {
 		_soc_printf(soc, CTL_BUFLEN, "ERROR: Too few arguments\n");
 		return _cmd_usage(soc, cmd_i);
@@ -253,8 +253,8 @@ int cmd_create_nvi(int soc, int cmd_i, int argc, char *argv[]) {
 
 
 
-static int _cmd_drop_nvi(int soc, int cmd_i, int argc, char *argv[]) {
-
+static int _cmd_drop_nvi(int soc, int cmd_i, int argc, char *argv[])
+{
 	if (argc != 2) {
 		if (argc < 2)
 			_soc_printf(soc, CTL_BUFLEN, "ERROR: Too few arguments\n");
@@ -286,8 +286,8 @@ static int _cmd_drop_nvi(int soc, int cmd_i, int argc, char *argv[]) {
 
 
 
-static int _cmd_exit(int soc, int cmd_i, int argc, char *argv[]) {
-
+static int _cmd_exit(int soc, int cmd_i, int argc, char *argv[])
+{
 	if (argc != 1) {
 		_soc_printf(soc, CTL_BUFLEN, "ERROR: Too many arguments\n");
 		return _cmd_usage(soc, cmd_i);
@@ -317,8 +317,8 @@ static int _cmd_exit(int soc, int cmd_i, int argc, char *argv[]) {
 
 
 
-static int _cmd_list(int soc, int cmd_i, int argc, char *argv[]) {
-
+static int _cmd_list(int soc, int cmd_i, int argc, char *argv[])
+{
 	if (argc != 1) {
 		_soc_printf(soc, CTL_BUFLEN, "ERROR: Too many arguments\n");
 		return _cmd_usage(soc, cmd_i);
@@ -332,8 +332,8 @@ static int _cmd_list(int soc, int cmd_i, int argc, char *argv[]) {
 
 
 
-static int _cmd_mac(int soc, int cmd_i, int argc, char *argv[]) {
-
+static int _cmd_mac(int soc, int cmd_i, int argc, char *argv[])
+{
 	if (argc != 2) {
 		_soc_printf(soc, CTL_BUFLEN, ((argc < 2) ? "Too few arguments\n" : "Too many arguments\n"));
 		return _cmd_usage(soc, cmd_i);
@@ -360,8 +360,8 @@ static int _cmd_mac(int soc, int cmd_i, int argc, char *argv[]) {
 
 
 
-static int _cmd_show(int soc, int cmd_i, int argc, char *argv[]) {
-
+static int _cmd_show(int soc, int cmd_i, int argc, char *argv[])
+{
 	char *cmd[] = {
 		"instance",
 		"mac"
@@ -397,8 +397,8 @@ static int _cmd_show(int soc, int cmd_i, int argc, char *argv[]) {
 #define HELP_NAME_LEN		"16"
 #define HELP_ARG_LEN		"32"
 
-static int _cmd_help(int soc, int cmd_i, int argc, char *argv[]) {
-
+static int _cmd_help(int soc, int cmd_i, int argc, char *argv[])
+{
 	int i;
 
 	if (argc != 1) {
@@ -417,8 +417,8 @@ static int _cmd_help(int soc, int cmd_i, int argc, char *argv[]) {
 
 
 
-static int _cmd_clear(int soc, int cmd_i, int argc, char *argv[]) {
-
+static int _cmd_clear(int soc, int cmd_i, int argc, char *argv[])
+{
 	char buf[CTL_BUFLEN];
 
 	if (argc < 2) {
@@ -452,8 +452,8 @@ static int _cmd_clear(int soc, int cmd_i, int argc, char *argv[]) {
 
 
 
-static int _cmd_flush(int soc, int cmd_i, int argc, char *argv[]) {
-
+static int _cmd_flush(int soc, int cmd_i, int argc, char *argv[])
+{
 	if (argc < 2) {
 		_soc_printf(soc, CTL_BUFLEN, "ERROR: Too few arguments\n");
 		return _cmd_usage(soc, cmd_i);
@@ -465,8 +465,8 @@ static int _cmd_flush(int soc, int cmd_i, int argc, char *argv[]) {
 
 
 
-static int _cmd_time(int soc, int cmd_i, int argc, char *argv[]) {
-
+static int _cmd_time(int soc, int cmd_i, int argc, char *argv[])
+{
 	if (argc < 2) {
 		_soc_printf(soc, CTL_BUFLEN, "ERROR: Too few arguments\n");
 		return _cmd_usage(soc, cmd_i);
@@ -505,8 +505,8 @@ static int _cmd_time(int soc, int cmd_i, int argc, char *argv[]) {
 
 
 
-static int _cmd_add(int soc, int cmd_i, int argc, char *argv[]) {
-
+static int _cmd_add(int soc, int cmd_i, int argc, char *argv[])
+{
 	if (argc < 4) {
 		_soc_printf(soc, CTL_BUFLEN, "ERROR: Too few arguments\n");
 		return _cmd_usage(soc, cmd_i);
@@ -550,8 +550,8 @@ static int _cmd_add(int soc, int cmd_i, int argc, char *argv[]) {
 
 
 
-static int _cmd_del(int soc, int cmd_i, int argc, char *argv[]) {
-
+static int _cmd_del(int soc, int cmd_i, int argc, char *argv[])
+{
 	if (argc < 3) {
 		_soc_printf(soc, CTL_BUFLEN, "ERROR: Too few arguments\n");
 		return _cmd_usage(soc, cmd_i);
@@ -590,8 +590,8 @@ static int _cmd_del(int soc, int cmd_i, int argc, char *argv[]) {
 
 #define INFO_PAD "32"
 
-static int _cmd_info(int soc, int cmd_i, int argc, char *argv[]) {
-
+static int _cmd_info(int soc, int cmd_i, int argc, char *argv[])
+{
 	if (argc > 2) {
 		_soc_printf(soc, CTL_BUFLEN, "ERROR: Too many arguments\n");
 		return _cmd_usage(soc, cmd_i);
@@ -644,8 +644,8 @@ static int _cmd_info(int soc, int cmd_i, int argc, char *argv[]) {
 
 #define vsid_PAD_LEN "11"
 
-static void _show_nvi(int soc) {
-
+static void _show_nvi(int soc)
+{
 	nvgre_i ****nvi = nvgre.nvi;
 
 	_soc_printf(soc, CTL_BUFLEN, "%"vsid_PAD_LEN"s | %s\n", "vsid", "Multicast address");
@@ -663,8 +663,8 @@ static void _show_nvi(int soc) {
 
 
 
-static void _show_table(int soc, list **table) {
-
+static void _show_table(int soc, list **table)
+{
 	int cnt = 0;
 	unsigned int table_size = get_table_size();
 
@@ -694,8 +694,8 @@ static void _show_table(int soc, list **table) {
 
 
 
-static void _soc_printf(int soc, const int len, const char *fmt, ...) {
-
+static void _soc_printf(int soc, const int len, const char *fmt, ...)
+{
 	char buf[CTL_BUFLEN];
 	va_list ap;
 	va_start(ap, fmt);
@@ -721,8 +721,8 @@ static void _soc_printf(int soc, const int len, const char *fmt, ...) {
 
 
 
-static int _cmd_debug(int soc, int cmd_i, int argc, char *argv[]) {
-
+static int _cmd_debug(int soc, int cmd_i, int argc, char *argv[])
+{
 	enable_debug();
 	_soc_printf(soc, CTL_BUFLEN, "Entering DEBUG mode\n");
 	return SUCCESS;

@@ -28,8 +28,8 @@ const struct in_addr inaddr_any = { INADDR_ANY };
 
 
 
-int init_gre_sock(sa_family_t family) {
-
+int init_gre_sock(sa_family_t family)
+{
 	int sock;
 
 	if ((sock = socket(family, SOCK_RAW, IPPROTO_GRE)) < 0) {
@@ -42,8 +42,8 @@ int init_gre_sock(sa_family_t family) {
 
 
 
-int init_unix_sock(char *dom, int csflag) {
-
+int init_unix_sock(char *dom, int csflag)
+{
 	int sock;
 	struct sockaddr_un addr;
 
@@ -93,8 +93,8 @@ int init_unix_sock(char *dom, int csflag) {
  * Multicast Settings
  */
 
-int join_mcast4_group(int sock, struct in_addr *maddr, char *if_name) {
-
+int join_mcast4_group(int sock, struct in_addr *maddr, char *if_name)
+{
 	struct ip_mreq mreq;
 	char maddr_s[16];
 
@@ -132,8 +132,8 @@ int join_mcast4_group(int sock, struct in_addr *maddr, char *if_name) {
 
 
 
-int leave_mcast4_group(int sock, struct in_addr *maddr, char *if_name) {
-
+int leave_mcast4_group(int sock, struct in_addr *maddr, char *if_name)
+{
 	struct ip_mreq mreq;
 	char maddr_s[16];
 
@@ -160,8 +160,8 @@ int leave_mcast4_group(int sock, struct in_addr *maddr, char *if_name) {
 
 
 
-int join_mcast6_group(int sock, struct in6_addr *maddr, char *if_name) {
-
+int join_mcast6_group(int sock, struct in6_addr *maddr, char *if_name)
+{
 	struct ipv6_mreq mreq6;
 	char maddr_s[16];
 
@@ -200,8 +200,8 @@ int join_mcast6_group(int sock, struct in6_addr *maddr, char *if_name) {
 
 
 
-int leave_mcast6_group(int sock, struct in6_addr *maddr, char *if_name) {
-
+int leave_mcast6_group(int sock, struct in6_addr *maddr, char *if_name)
+{
 	struct ipv6_mreq mreq6;
 	char maddr_s[16];
 
@@ -228,3 +228,6 @@ int leave_mcast6_group(int sock, struct in6_addr *maddr, char *if_name) {
 
 	return 0;
 }
+
+
+

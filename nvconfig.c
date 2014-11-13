@@ -40,8 +40,8 @@ static const struct option options[] = {
 
 
 
-int main(int argc, char *argv[]) {
-
+int main(int argc, char *argv[])
+{
 	int opt, sock;
 	extern int optind, opterr;
 	extern char *optarg;
@@ -108,8 +108,8 @@ int main(int argc, char *argv[]) {
 
 
 
-void client_usage(void) {
-
+void client_usage(void)
+{
 	usage();
 	fprintf(stderr, "        Use help command: "CONTROLLER_NAME" help\n");
 	exit(EXIT_SUCCESS);
@@ -117,8 +117,8 @@ void client_usage(void) {
 
 
 
-void usage(void) {
-
+void usage(void)
+{
 	fprintf(stderr, "\n");
 	fprintf(stderr, "Usage: "CONTROLLER_NAME" [-h|-v] [-s <socket path>] COMMAND\n");
 	fprintf(stderr, "\n");
@@ -150,8 +150,8 @@ int argv_to1str_w(char *buf, int optind, int argc, char **argv) {
 
 
 
-int argv_to1str(char *buf, int argc, char **argv) {
-
+int argv_to1str(char *buf, int argc, char **argv)
+{
 	int i, len;
 	char *p = buf;
 

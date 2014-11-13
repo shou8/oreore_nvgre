@@ -203,8 +203,8 @@ void usage(char *bin) {
 
 
 
-void *outer_loop_thread(void *args) {
-
+void *outer_loop_thread(void *args)
+{
 	int *sock = (int *)args;
 	outer_loop(*sock);
 
@@ -213,8 +213,8 @@ void *outer_loop_thread(void *args) {
 
 
 
-void create_pid_file(char *pid_path) {
-
+void create_pid_file(char *pid_path)
+{
 	FILE *fp;
 	if ((fp = fopen(pid_path, "w")) == NULL)
 		log_pcexit("fopen");

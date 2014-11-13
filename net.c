@@ -52,12 +52,13 @@ int outer_loop(int soc)
 /*
  * Linux Only
  */
-/*
+#ifdef OS_LINUX
 		struct iphdr *iphdr = (struct iphdr *)buf;
 		size_t iph_len = iphdr->ihl * 4;
- */
+#else
 		struct ip *iphdr = (struct ip *)buf;
 		size_t iph_len = (size_t)iphdr->ip_hl * 4;
+#endif
 		bp = buf + iph_len;
 		len -= iph_len;
 

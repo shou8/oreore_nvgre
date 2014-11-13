@@ -19,6 +19,10 @@
 #include "netutil.h"
 #include "log.h"
 
+#ifdef OS_DARWIN
+#include "ethertype.h"
+#endif
+
 
 
 /* ARP Caching time */
@@ -265,8 +269,19 @@ int get_sockaddr(struct sockaddr_storage *saddr, const char *caddr)
 	if (getaddrinfo(caddr, NULL, &hints, &res) < 0)
 		return -1;
 
+fprintf(stderr, "prev\n");
+fprintf(stderr, "res: %p\n", res);
+fprintf(stderr, "caddr: %s\n", caddr);
+
+	if (res == NULL)
+		log_cexit("Cannot get address (getaddrinfo)");
+
 	memcpy(saddr, res->ai_addr, res->ai_addrlen);
 	saddr->ss_family = res->ai_family;
+
+fprintf(stderr, "after\n");
+
+	freeaddrinfo(res);
 
 	return 0;
 }

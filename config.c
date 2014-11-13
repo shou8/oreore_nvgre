@@ -30,8 +30,8 @@ static char *rm_extra_char(char *str);
 
 
 
-int get_config(char *config_path, struct config *conf) {
-
+int get_config(char *config_path, struct config *conf)
+{
 	FILE *fp;
 
 	if ((fp = fopen(config_path, "r")) == NULL)
@@ -106,8 +106,8 @@ int get_config(char *config_path, struct config *conf) {
 
 
 
-static int match_char(char c, char *str, int len) {
-	
+static int match_char(char c, char *str, int len)
+{
 	int i;
 	for (i = 0; i < len; i++)
 		if (c == str[i]) return 1;
@@ -117,8 +117,8 @@ static int match_char(char c, char *str, int len) {
 
 
 
-static int rm_extra_right_char(char *str, char *rm_chars) {
-
+static int rm_extra_right_char(char *str, char *rm_chars)
+{
 	int i = strlen(str) - 1;
 	if (str[i] == '\n') i--;
 
@@ -132,8 +132,8 @@ static int rm_extra_right_char(char *str, char *rm_chars) {
 
 
 
-static char *rm_extra_left_char(char *str, char *rm_chars) {
-
+static char *rm_extra_left_char(char *str, char *rm_chars)
+{
 	char *p;
 	int rm_chars_len = strlen(rm_chars);
 	for (p=str; *p != '\0'; p++)
@@ -143,8 +143,8 @@ static char *rm_extra_left_char(char *str, char *rm_chars) {
 
 
 
-static char *rm_extra_char(char *str) {
-
+static char *rm_extra_char(char *str)
+{
 	rm_extra_right_char(str, " \t");
 	str = rm_extra_left_char(str, " \t");
 
@@ -161,8 +161,8 @@ static char *rm_extra_char(char *str) {
 
 
 
-int set_config(struct config *conf) {
-
+int set_config(struct config *conf)
+{
 	switch (conf->param_no) {
 		case 0:
 			strncpy(nvgre.cmaddr, conf->value, DEFAULT_BUFLEN);
@@ -184,3 +184,6 @@ int set_config(struct config *conf) {
 
 	return 0;
 }
+
+
+

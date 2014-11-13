@@ -60,22 +60,22 @@ void log_pcexit(const char *str);
  *
  */
 
-void enable_debug(void) {
-
+void enable_debug(void)
+{
 	_debug_mode = DEBUG_ENABLE;
 }
 
 
 
-void disable_debug(void) {
-
+void disable_debug(void)
+{
 	_debug_mode = DEBUG_DISABLE;
 }
 
 
 
-int get_status(void) {
-
+int get_status(void)
+{
 	return _debug_mode;
 }
 
@@ -84,8 +84,8 @@ int get_status(void) {
 /*
  * Get logging information
  */
-void init_log(void) {
-
+void init_log(void)
+{
 	enable_syslog();
 	_pid = getpid();
 
@@ -105,22 +105,22 @@ void init_log(void) {
  * After "disable_syslog" function is used,
  * All messages is only logged on stderr.
  */
-void enable_syslog(void) {
-
+void enable_syslog(void)
+{
 	_syslog_mode = SYSLOG_ENABLE;
 }
 
 
 
-void disable_syslog(void) {
-
+void disable_syslog(void)
+{
 	_syslog_mode = SYSLOG_DISABLE;
 }
 
 
 
-void log_stderr(const char *fmt, ...) {
-
+void log_stderr(const char *fmt, ...)
+{
 	va_list ap;
 	int mode = _syslog_mode;
 	
@@ -134,8 +134,8 @@ void log_stderr(const char *fmt, ...) {
 
 
 
-void log_debug(const char *fmt, ...) {
-
+void log_debug(const char *fmt, ...)
+{
 #ifdef DEBUG
 	if (_debug_mode == DEBUG_ENABLE) {
 		va_list ap;
@@ -149,8 +149,8 @@ void log_debug(const char *fmt, ...) {
 
 
 
-void log_info(const char *fmt, ...) {
-
+void log_info(const char *fmt, ...)
+{
 	va_list ap;
 	va_start(ap, fmt);
 	_print_log_v(LOG_INFO, fmt, ap);
@@ -159,8 +159,8 @@ void log_info(const char *fmt, ...) {
 
 
 
-void log_warn(const char *fmt, ...) {
-
+void log_warn(const char *fmt, ...)
+{
 	va_list ap;
 	va_start(ap, fmt);
 	_print_log_v(LOG_WARNING, fmt, ap);
@@ -169,8 +169,8 @@ void log_warn(const char *fmt, ...) {
 
 
 
-void log_err(const char *fmt, ...) {
-
+void log_err(const char *fmt, ...)
+{
 	va_list ap;
 	va_start(ap, fmt);
 	_print_log_v(LOG_ERR, fmt, ap);
@@ -179,8 +179,8 @@ void log_err(const char *fmt, ...) {
 
 
 
-void log_crit(const char *fmt, ...) {
-
+void log_crit(const char *fmt, ...)
+{
 	va_list ap;
 	va_start(ap, fmt);
 	_print_log_v(LOG_CRIT, fmt, ap);
@@ -189,8 +189,8 @@ void log_crit(const char *fmt, ...) {
 
 
 
-void log_pwarn(const char *str) {
-
+void log_pwarn(const char *str)
+{
 	if (str == NULL)
 		_print_log(LOG_WARNING, "%s\n", strerror(errno));
 	else
@@ -199,8 +199,8 @@ void log_pwarn(const char *str) {
 
 
 
-void log_perr(const char *str) {
-
+void log_perr(const char *str)
+{
 	if (str == NULL)
 		_print_log(LOG_ERR, "%s\n", strerror(errno));
 	else
@@ -209,8 +209,8 @@ void log_perr(const char *str) {
 
 
 
-void log_pcrit(const char *str) {
-
+void log_pcrit(const char *str)
+{
 	if(str == NULL)
 		_print_log(LOG_CRIT, "%s\n", strerror(errno));
 	else
@@ -219,8 +219,8 @@ void log_pcrit(const char *str) {
 
 
 
-void log_iexit(const char *fmt, ...) {
-
+void log_iexit(const char *fmt, ...)
+{
 	va_list ap;
 	va_start(ap, fmt);
 	_print_log_v(LOG_INFO, fmt, ap);
@@ -230,8 +230,8 @@ void log_iexit(const char *fmt, ...) {
 
 
 
-void log_cexit(const char *fmt, ...) {
-
+void log_cexit(const char *fmt, ...)
+{
 	va_list ap;
 	va_start(ap, fmt);
 	_print_log_v(LOG_CRIT, fmt, ap);
@@ -241,8 +241,8 @@ void log_cexit(const char *fmt, ...) {
 
 
 
-void log_pcexit(const char *str) {
-
+void log_pcexit(const char *str)
+{
 	if(str == NULL)
 		_print_log(LOG_CRIT, "%s\n", strerror(errno));
 	else
@@ -253,8 +253,8 @@ void log_pcexit(const char *str) {
 
 
 
-void log_binfo(char *buf, const char *fmt, ...) {
-
+void log_binfo(char *buf, const char *fmt, ...)
+{
 	va_list ap;
 	va_start(ap, fmt);
 	_print_log_v(LOG_INFO, fmt, ap);
@@ -264,8 +264,8 @@ void log_binfo(char *buf, const char *fmt, ...) {
 
 
 
-void log_bwarn(char *buf, const char *fmt, ...) {
-
+void log_bwarn(char *buf, const char *fmt, ...)
+{
 	va_list ap;
 	va_start(ap, fmt);
 	_print_log_v(LOG_WARNING, fmt, ap);
@@ -275,8 +275,8 @@ void log_bwarn(char *buf, const char *fmt, ...) {
 
 
 
-void log_berr(char *buf, const char *fmt, ...) {
-
+void log_berr(char *buf, const char *fmt, ...)
+{
 	va_list ap;
 	va_start(ap, fmt);
 	_print_log_v(LOG_ERR, fmt, ap);
@@ -286,16 +286,16 @@ void log_berr(char *buf, const char *fmt, ...) {
 
 
 
-void log_bperr(char *buf, const char *str) {
-
+void log_bperr(char *buf, const char *str)
+{
 	log_perr(str);
 	if (buf != NULL) strncpy(buf, line, LOG_LINELEN);
 }
 
 
 
-static void _print_log(int level, const char *fmt, ...) {
-
+static void _print_log(int level, const char *fmt, ...)
+{
 	va_list ap;
 
 	va_start(ap, fmt);
@@ -326,8 +326,8 @@ static void _print_log(int level, const char *fmt, ...) {
 
 
 
-static void _print_log_v(int level, const char *fmt, va_list ap) {
-
+static void _print_log_v(int level, const char *fmt, va_list ap)
+{
 #ifndef DEBUG
 	if (_syslog_mode == SYSLOG_ENABLE) {
 		openlog(DAEMON_NAME, LOG_CONS | LOG_PID, level);
@@ -353,8 +353,8 @@ static void _print_log_v(int level, const char *fmt, va_list ap) {
 
 
 
-static char *_get_facility(int level) {
-
+static char *_get_facility(int level)
+{
 	switch (level) {
 		case LOG_DEBUG: return "debug";
 		case LOG_INFO: return "info";
