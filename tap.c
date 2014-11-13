@@ -5,8 +5,6 @@
 #include <net/if.h>
 #ifdef OS_LINUX
 #include <linux/if_tun.h>
-#else
-#include <net/if_tap.h>
 #endif
 #include <sys/socket.h>
 #include <sys/ioctl.h>
