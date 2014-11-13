@@ -44,7 +44,9 @@ stop_func() {
 	log_daemon_msg "Stopping" ${PROC}
 	if [ -f ${PID_FILE} ]; then
 		/sbin/start-stop-daemon --stop --quiet --oknodo --pidfile ${PID_FILE} && log_success_msg || log_failure_msg
-		rm -f ${PID_FILE} > /dev/null 2>&1
+		if [ $? == 0 ]; then
+			rm -f ${PID_FILE} > /dev/null 2>&1
+		fi
 	else
 		log_failure_msg
 	fi
