@@ -5,6 +5,10 @@
 #include <pthread.h>
 #include <getopt.h>
 
+#ifndef OS_LINUX
+#include <signal.h>
+#endif
+
 #include "base.h"
 #include "log.h"
 #include "sock.h"
@@ -59,6 +63,21 @@ int main(int argc, char *argv[])
 
 	enable_debug();
 	enable_syslog();
+
+#ifndef OS_LINUX
+
+	struct sigaction sa;
+
+	memset(&sa, 0, sizeof(struct sigaction));
+	sa.sa_handler = sig_catch;
+	sa.sa_flags |= SA_RESTART;
+
+	if (sigaction(SIGHUP, &sa, NULL) < 0 ||
+			sigaction(SIGINT, &sa, NULL) < 0 ||
+			sigaction(SIGTERM, &sa, NULL) < 0)
+		log_perr("signal");
+
+#endif
 
 #ifdef DEBUG
 	enable_debug();

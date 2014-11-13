@@ -208,3 +208,30 @@ void del_nvi(char *buf, uint8_t *vsid)
 
 
 
+#ifndef OS_LINUX
+
+void destroy_nvgre_all(void)
+{
+	int i, j, k;
+
+	for (i=0; i<NUMOF_UINT8; i++) {
+		for (j=0; j<NUMOF_UINT8; j++) {
+			for (k=0; k<NUMOF_UINT8; k++) {
+				if (nvgre.nvi[i][j][k] == NULL) continue;
+				tap_destroy(nvgre.nvi[i][j][k]->tap->name);
+				free(nvgre.nvi[i][j][k]->tap);
+			}
+		}
+	}
+}
+
+
+
+void sig_catch(int sig)
+{
+	destroy_nvgre_all();
+	destroy_nvgre();
+	exit(EXIT_SUCCESS);
+}
+
+#endif
