@@ -13,7 +13,7 @@ LDFLAGS=
 OSTYPE=OS_$(shell uname -s | tr 'a-z' 'A-Z')
 CFLAGS+=-D${OSTYPE}
 
-ifeq (${OSTYPE}, "linux")
+ifeq (${OSTYPE}, OS_LINUX)
 OS_DIST=$(shell head -1 /etc/issue|cut -d ' ' -f1)
 endif
 
@@ -64,7 +64,11 @@ else
 ifeq (${OS_DIST}, Debian)
 	install -p -m 755 ${SCRIPT_DIR}/${LSB_SCRIPT}.debian ${INIT_DIR}/${LSB_SCRIPT}
 else
+ifeq (${OS_DIST}, Ubuntu)
+	install -p -m 755 ${SCRIPT_DIR}/${LSB_SCRIPT}.debian ${INIT_DIR}/${LSB_SCRIPT}
+else
 	install -p -m 755 ${SCRIPT_DIR}/${LSB_SCRIPT} ${INIT_DIR}/${LSB_SCRIPT}
+endif
 endif
 endif
 

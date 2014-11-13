@@ -91,6 +91,7 @@ int tap_up(char *dev) {
 
 
 
+#ifndef OS_LINUX
 void tap_destroy(char *dev) {
 
 	int fd;
@@ -107,3 +108,4 @@ void tap_destroy(char *dev) {
 
 	return;
 }
+#endif
