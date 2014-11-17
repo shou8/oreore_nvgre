@@ -5,7 +5,7 @@ DEPS=$(OBJS:%.o=%.d)
 LDLIBS=-lpthread
 DAEMON=nvgred
 #DEBUG_FLAG=-g -DDEBUG
-CFLAGS=-Wall -O2 -MMD
+CFLAGS=-Wall -MMD
 CONTROLER=nvconfig
 CONTROLER_OBJS=nvconfig.o log.o sock.o util.o netutil.o
 LDFLAGS=
@@ -41,10 +41,10 @@ ${CONTROLER}:${CONTROLER_OBJS}
 	${CC} ${CFLAGS} ${DEBUG_FLAG} -o $@ $^ ${LDFLAGS}
 
 debug:
-	${MAKE} DEBUG_FLAG="-g -DDEBUG" OBJS="${OBJS}"
+	${MAKE} DEBUG_FLAG="-g -DDEBUG -O0" OBJS="${OBJS}"
 
 netdebug:
-	${MAKE} DEBUG_FLAG="-g -DDEBUG" OBJS="${OBJS}"
+	${MAKE} DEBUG_FLAG="-g -DDEBUG -O0" OBJS="${OBJS}"
 #	@cd test && ${MAKE}
 
 clean:

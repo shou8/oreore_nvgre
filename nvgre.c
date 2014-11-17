@@ -44,10 +44,8 @@ int init_nvgre(void)
 {
 	init_nvi();
 
-	if (get_sockaddr(&nvgre.maddr, nvgre.cmaddr) < 0) {
-		log_pcrit("getaddrinfo");
+	if (get_sockaddr(&nvgre.maddr, nvgre.cmaddr) < 0)
 		log_cexit("Invalid multicast address: %s\n", nvgre.cmaddr);
-	}
 
 	nvgre.family = nvgre.maddr.ss_family;
 

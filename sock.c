@@ -20,7 +20,6 @@
 
 
 #define CON_NUM		1
-#define SUNPATH_LEN	108
 
 
 
@@ -50,9 +49,9 @@ int init_unix_sock(char *dom, int csflag)
 	memset(&addr, 0, sizeof(addr));
 	addr.sun_family = AF_UNIX; // AF_LOCAL
 	if (dom == NULL)
-		strncpy(addr.sun_path, DEFAULT_UNIX_DOMAIN, SUNPATH_LEN);
+		strncpy(addr.sun_path, DEFAULT_UNIX_DOMAIN, sizeof(addr.sun_path));
 	else
-		strncpy(addr.sun_path, dom, SUNPATH_LEN);
+		strncpy(addr.sun_path, dom, sizeof(addr.sun_path));
 
 	if ((sock = socket(AF_UNIX, SOCK_STREAM, 0)) < 0) {
 		log_pcrit("unix.socket");

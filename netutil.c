@@ -9,8 +9,8 @@
 #include <sys/socket.h>
 #include <netdb.h>
 #include <arpa/inet.h>
-#ifndef OS_LINUX
 #include <sys/types.h>
+#ifndef OS_LINUX
 #include <ifaddrs.h>
 #include <net/if_dl.h>
 #include <net/if_types.h>
@@ -263,23 +263,22 @@ int get_sockaddr(struct sockaddr_storage *saddr, const char *caddr)
 	memset(&hints, 0, sizeof(hints));
 	hints.ai_family = AF_UNSPEC;
 	hints.ai_socktype = SOCK_RAW;
+#ifndef OS_DARWIN
 	hints.ai_protocol = IPPROTO_GRE;
+#endif
 	hints.ai_flags = AI_NUMERICHOST;
 
-	if (getaddrinfo(caddr, NULL, &hints, &res) < 0)
+	int result = getaddrinfo(caddr, NULL, &hints, &res);
+	if (result != 0) {
+		log_crit(gai_strerror(result));
 		return -1;
-
-fprintf(stderr, "prev\n");
-fprintf(stderr, "res: %p\n", res);
-fprintf(stderr, "caddr: %s\n", caddr);
+	}
 
 	if (res == NULL)
-		log_cexit("Cannot get address (getaddrinfo)");
+		log_cexit("Invalid address (getaddrinfo)");
 
 	memcpy(saddr, res->ai_addr, res->ai_addrlen);
 	saddr->ss_family = res->ai_family;
-
-fprintf(stderr, "after\n");
 
 	freeaddrinfo(res);
 
@@ -336,4 +335,6 @@ uint16_t checksum(uint16_t *buf, int bufsz)
 
 	return ~sum;
 }
+
+
 
