@@ -1,8 +1,10 @@
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>	
 #include <fcntl.h>
 #include <errno.h>
 #include <net/if.h>
+#include <limits.h>
 #ifdef OS_LINUX
 #include <linux/if_tun.h>
 #endif
@@ -36,8 +38,10 @@ int tap_alloc(char *dev)
 	}
 
 #else
+	char devPath[PATH_MAX];
+	snprintf(devPath, PATH_MAX, "/dev/%s", dev);
 
-	if ((fd = open(dev, O_RDWR)) < 0) {
+	if ((fd = open(devPath, O_RDWR)) < 0) {
 
 		if ((fd = socket(AF_LOCAL, SOCK_DGRAM, 0)) < 0)
 			log_pcexit("socket");
