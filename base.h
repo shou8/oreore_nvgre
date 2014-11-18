@@ -2,22 +2,19 @@
 #define BASE_H_INCLUDED
 
 #include <stdint.h>
+#include <net/if.h>
 
 
 
-#define DAEMON_NAME		"nvgred"
-#define CONTROLLER_NAME	"nvconfig"
-#ifdef OS_LINUX
-#define TAP_BASE_NAME	"nvgre"
-#else
-#define TAP_BASE_NAME	"tap"
-#endif
+#define DAEMON_NAME			"nvgred"
+#define CONTROLLER_NAME		"nvconfig"
+#define TAP_BASE_NAME		"nvgre"
+#define UNIX_TAP_BASE_NAME	"tap"
 
 /* MAC Address Length */
 #define MAC_LEN_BITS	48
 #define MAC_LEN			6		// 48bits / uint8_t = 6
 
-#define IF_NAME_LEN		256
 #define DEFAULT_BUFLEN	256
 
 #define UNIX_DOMAIN_LEN			1024
@@ -35,7 +32,7 @@
 
 typedef struct _device_ {
 	int sock;
-	char name[IF_NAME_LEN];
+	char name[IFNAMSIZ];
 	uint8_t hwaddr[MAC_LEN];
 } device;
 

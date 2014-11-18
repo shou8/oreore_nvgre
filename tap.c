@@ -21,6 +21,7 @@ int tap_alloc(char *dev)
 	struct ifreq ifr;
  
 #ifdef OS_LINUX
+
 	if ((fd = open("/dev/net/tun", O_RDWR)) < 0)
 		log_pcexit("open");
 
@@ -33,21 +34,24 @@ int tap_alloc(char *dev)
 		log_pcrit("ioctl - TUNSETIFF");
 		return -1;
 	}
+
 #else
+
 	if ((fd = open(dev, O_RDWR)) < 0) {
-		log_pcrit("open");
+
 		if ((fd = socket(AF_LOCAL, SOCK_DGRAM, 0)) < 0)
 			log_pcexit("socket");
-
+	
 		memset(&ifr, 0, sizeof(ifr));
 		strncpy(ifr.ifr_name, dev, IFNAMSIZ-1);
-
+	
 		if (ioctl(fd, SIOCIFCREATE2, &ifr) == -1) {
 			log_pcrit("ioctl - SIOCIFCREATE2");
 			close(fd);
 			return -1;
 		}
 	}
+
 #endif
 
 	return fd;
@@ -59,6 +63,8 @@ int tap_up(char *dev)
 {
 	int fd;
 	struct ifreq ifr;
+
+	memset(&ifr, 0, sizeof(ifr));
 
 	// Get Accessor
 	if ( (fd = socket(AF_INET, SOCK_DGRAM, 0)) < 0) {
@@ -89,6 +95,38 @@ int tap_up(char *dev)
 
 
 
+int tap_down(char *dev)
+{
+	int fd;
+	struct ifreq ifr;
+
+	memset(&ifr, 0, sizeof(ifr));
+
+	if ( (fd = socket(AF_INET, SOCK_DGRAM, 0)) < 0) {
+		log_pcrit("socket");
+		return -1;
+	}
+
+	strncpy(ifr.ifr_name, dev, IFNAMSIZ-1);
+	if (ioctl(fd, SIOCGIFFLAGS, &ifr) != 0) {
+		close(fd);
+		log_pcrit("ioctl - SIOCGIFFLAGS");
+		return -1;
+	}
+
+	ifr.ifr_flags &= ! IFF_UP;
+	if (ioctl(fd, SIOCSIFFLAGS, &ifr) != 0) {
+		close(fd);
+		log_pcrit("ioctl - SIOCSIFFLAGS");
+		return -1;
+	}
+
+	close(fd);
+	return 0;
+}
+
+
+
 #ifndef OS_LINUX
 void tap_destroy(char *dev)
 {
@@ -106,4 +144,30 @@ void tap_destroy(char *dev)
 
 	return;
 }
+
+
+
+int tap_rename(char *oldName, char *newName)
+{
+	int fd = 0;
+	struct ifreq ifr;
+
+	if ((fd = socket(AF_LOCAL, SOCK_DGRAM, 0)) < 0)
+		log_pcexit("socket");
+
+	memset(&ifr, 0, sizeof(ifr));
+	strncpy(ifr.ifr_name, oldName, IFNAMSIZ-1);
+	ifr.ifr_data = newName;
+	if (ioctl(fd, SIOCSIFNAME, &ifr) < 0) {
+		log_perr("ioctl - SIOCSIFNAME");
+		return -1;
+	}
+
+	close(fd);
+
+	return 0;
+}
 #endif
+
+
+

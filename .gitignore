@@ -5,3 +5,4 @@ test/udpgen
 nvconfig
 nvgred
 core.*
+*.core

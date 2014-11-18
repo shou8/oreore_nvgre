@@ -3,6 +3,7 @@
 #include <string.h>
 #include <limits.h>
 #include <unistd.h>
+#include <net/if.h>
 #include <inttypes.h>
 #include <arpa/inet.h>
 #include <sys/socket.h>
@@ -110,13 +111,34 @@ static device *create_nvgre_if(uint8_t *vsid)
 	device *tap = (device *)malloc(sizeof(device));
 	memset(tap, 0, sizeof(device));
 
-	snprintf(tap->name, IF_NAME_LEN, TAP_BASE_NAME"%"PRIu32, vsid32);
+#ifdef OS_LINUX
+	// Name is "nvgreX"
+	snprintf(tap->name, IFNAMSIZ-1, TAP_BASE_NAME"%"PRIu32, vsid32);
+#else
+	// Name is "tapX" because of OS decision
+	snprintf(tap->name, IFNAMSIZ-1, UNIX_TAP_BASE_NAME"%"PRIu32, vsid32);
+#endif
 	tap->sock = tap_alloc(tap->name);
 	if (tap->sock < 0) {
 		log_crit("Cannot create tap interface\n");
 		free(tap);
 		return NULL;
 	}
+
+#ifndef OS_LINUX
+	/*
+	 * On UNIX, we can not decide name freely,
+	 * But, we can change interface name.
+	 */
+	char oldName[IFNAMSIZ];
+
+	strncpy(oldName, tap->name, IFNAMSIZ-1);
+	snprintf(tap->name, IFNAMSIZ-1, TAP_BASE_NAME"%"PRIu32, vsid32);
+	if (tap_rename(oldName, tap->name) < 0) {
+		log_err("Cannot rename tap interface\n");
+		strncpy(tap->name, oldName, IFNAMSIZ-1);
+	}
+#endif
 
 	tap_up(tap->name);
 	get_mac(tap->sock, tap->name, tap->hwaddr);
@@ -199,6 +221,9 @@ void del_nvi(char *buf, uint8_t *vsid)
 	}
 
 	close(nvgre.nvi[vsid[0]][vsid[1]][vsid[2]]->tap->sock);
+#ifndef OS_LINUX
+	tap_destroy(nvgre.nvi[vsid[0]][vsid[1]][vsid[2]]->tap->name);
+#endif
 	free(nvgre.nvi[vsid[0]][vsid[1]][vsid[2]]->tap);
 	free(nvgre.nvi[vsid[0]][vsid[1]][vsid[2]]);
 	nvgre.nvi[vsid[0]][vsid[1]][vsid[2]] = NULL;
