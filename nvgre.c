@@ -7,6 +7,7 @@
 #include <inttypes.h>
 #include <arpa/inet.h>
 #include <sys/socket.h>
+#include <sys/ioctl.h>
 
 #include "base.h"
 #include "util.h"
@@ -126,6 +127,7 @@ static device *create_nvgre_if(uint8_t *vsid)
 	}
 
 #ifndef OS_LINUX
+#ifndef OS_DARWIN
 	/*
 	 * On UNIX, we can not decide name freely,
 	 * But, we can change interface name.
@@ -138,6 +140,7 @@ static device *create_nvgre_if(uint8_t *vsid)
 		log_err("Cannot rename tap interface\n");
 		strncpy(tap->name, oldName, IFNAMSIZ-1);
 	}
+#endif
 #endif
 
 	tap_up(tap->name);

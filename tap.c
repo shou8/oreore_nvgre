@@ -147,6 +147,7 @@ void tap_destroy(char *dev)
 
 
 
+#ifndef OS_DARWIN
 int tap_rename(char *oldName, char *newName)
 {
 	int fd = 0;
@@ -167,6 +168,7 @@ int tap_rename(char *oldName, char *newName)
 
 	return 0;
 }
+#endif
 #endif
 
 
