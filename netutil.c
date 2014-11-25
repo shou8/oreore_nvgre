@@ -14,14 +14,14 @@
 #include <ifaddrs.h>
 #include <net/if_dl.h>
 #include <net/if_types.h>
-#endif
+#endif /* OS_LINUX */
 
 #include "netutil.h"
 #include "log.h"
 
 #ifdef OS_DARWIN
 #include "ethertype.h"
-#endif
+#endif /* OS_DARWIN */
 
 
 
@@ -135,7 +135,7 @@ uint8_t *get_mac(int sock, char *name, uint8_t *hwaddr)
 			break;
 		}
 	}
-#endif
+#endif /* OS_LINUX */
 
 	return hwaddr;
 }
@@ -265,7 +265,7 @@ int get_sockaddr(struct sockaddr_storage *saddr, const char *caddr)
 	hints.ai_socktype = SOCK_RAW;
 #ifndef OS_DARWIN
 	hints.ai_protocol = IPPROTO_GRE;
-#endif
+#endif /* OS_DARWIN */
 	hints.ai_flags = AI_NUMERICHOST;
 
 	int result = getaddrinfo(caddr, NULL, &hints, &res);

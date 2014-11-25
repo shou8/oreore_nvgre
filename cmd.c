@@ -67,6 +67,7 @@ static int _cmd_debug(int soc, int cmd_i, int argc, char *argv[]);
 struct cmd_entry _cmd_t[] = {
 	{ "create", cmd_create_nvi, "<vsid> [<Multicast address>]", "Create instance and interface"},
 	{ "drop", _cmd_drop_nvi, "<vsid>", "Delete instance and interface"},
+	{ "destroy", _cmd_drop_nvi, "<vsid>", "Alias to \"drop\""},
 	{ "exit", _cmd_exit, NULL, "Exit process"},
 	{ "list", _cmd_list, NULL, "Show instances"},
 	{ "mac", _cmd_mac, "<vsid>", "Show MAC address table"},

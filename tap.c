@@ -7,7 +7,7 @@
 #include <limits.h>
 #ifdef OS_LINUX
 #include <linux/if_tun.h>
-#endif
+#endif /* OS_LINUX */
 #include <sys/socket.h>
 #include <sys/ioctl.h>
 #include <unistd.h>
@@ -37,7 +37,8 @@ int tap_alloc(char *dev)
 		return -1;
 	}
 
-#else
+#else /* OS_LINUX */
+
 	char devPath[PATH_MAX];
 	snprintf(devPath, PATH_MAX, "/dev/%s", dev);
 
@@ -56,7 +57,7 @@ int tap_alloc(char *dev)
 		}
 	}
 
-#endif
+#endif /* OS_LINUX */
 
 	return fd;
 }
@@ -172,8 +173,8 @@ int tap_rename(char *oldName, char *newName)
 
 	return 0;
 }
-#endif
-#endif
+#endif /* OS_DARWIN */
+#endif /* OS_LINUX */
 
 
 

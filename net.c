@@ -8,7 +8,7 @@
 #ifndef OS_LINUX
 #include <sys/types.h>
 #include <netinet/in.h>
-#endif
+#endif /* OS_LINUX */
 #include <netinet/ip.h>
 
 #include "base.h"
@@ -28,7 +28,7 @@
 
 #ifdef DEBUG
 static void print_nvgre_hdr(struct nvgre_hdr *nvhdr, FILE *fp);
-#endif
+#endif /* DEBUG */
 
 
 
@@ -58,7 +58,7 @@ int outer_loop(int soc)
 #else
 		struct ip *iphdr = (struct ip *)buf;
 		size_t iph_len = (size_t)iphdr->ip_hl * 4;
-#endif
+#endif /* OS_LINUX */
 		bp = buf + iph_len;
 		len -= iph_len;
 
@@ -71,7 +71,7 @@ int outer_loop(int soc)
 				continue;
 			}
 		}
-#endif
+#endif /* DEBUG */
 
 		/* NVGRE */
 		struct nvgre_hdr *nvhdr = (struct nvgre_hdr *)bp;
@@ -81,7 +81,7 @@ int outer_loop(int soc)
 #ifdef DEBUG
 		if (get_status())
 			print_nvgre_hdr(nvhdr, stdout);
-#endif
+#endif /* DEBUG */
 
 		nvgre_i *nins = nvgre.nvi[nvhdr->vsid[0]][nvhdr->vsid[1]][nvhdr->vsid[2]];
 		if (nins == NULL) continue;
@@ -98,7 +98,7 @@ int outer_loop(int soc)
 #ifdef DEBUG
 		if (get_status())
 			print_eth_h(eh, stdout);
-#endif
+#endif /* DEBUG */
 	}
 }
 
@@ -129,14 +129,14 @@ int inner_loop(nvgre_i *nvi)
 #ifdef DEBUG
 		if (get_status())
 			print_nvgre_hdr(nvh, stdout);
-#endif
+#endif /* DEBUG */
 
 		struct ether_header *eh = (struct ether_header *)rp;
 
 #ifdef DEBUG
 		if (get_status())
 			print_eth_h(eh, stdout);
-#endif
+#endif /* DEBUG */
 		data = find_data(nvi->table, eh->ether_dhost);
 		if (data == NULL) {
 			if (sendto(nvgre.sock, buf, len, MSG_DONTWAIT, (struct sockaddr *)&nvi->maddr, sizeof(nvi->maddr)) < 0)
@@ -165,7 +165,7 @@ static void print_nvgre_hdr(struct nvgre_hdr *nvhdr, FILE *fp)
 	fprintf(fp, "protocol: 0x%04X\n", ntohs(nvhdr->protocol_type));
 	fprintf(fp, "flowid  : 0x%02X\n", nvhdr->flowid);
 } 
-#endif
+#endif /* DEBUG */
 
 
 

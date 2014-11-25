@@ -32,7 +32,7 @@ static int _pid;						// Process ID
 static char _h_name[_POSIX_HOST_NAME_MAX];
 #else
 static char _h_name[HOST_NAME_MAX];		// Host Name
-#endif
+#endif /* OS_LINUX */
 
 static int _debug_mode = DEBUG_DISABLE;
 

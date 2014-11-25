@@ -9,8 +9,8 @@ int tap_up(char *dev);
 void tap_destroy(char *dev);
 #ifndef OS_DARWIN
 int tap_rename(char *oldName, char *newName);
-#endif
-#endif
+#endif /* OS_DARWIN */
+#endif /* OS_LINUX */
 
 
 

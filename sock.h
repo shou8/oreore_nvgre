@@ -8,7 +8,7 @@
 #include <netdb.h>
 #ifndef OS_LINUX
 #include <netinet/in.h>
-#endif
+#endif /* OS_LINUX */
 
 
 

@@ -118,7 +118,7 @@ static device *create_nvgre_if(uint8_t *vsid)
 #else
 	// Name is "tapX" because of OS decision
 	snprintf(tap->name, IFNAMSIZ-1, UNIX_TAP_BASE_NAME"%"PRIu32, vsid32);
-#endif
+#endif /* OS_LINUX */
 	tap->sock = tap_alloc(tap->name);
 	if (tap->sock < 0) {
 		log_crit("Cannot create tap interface\n");
@@ -140,8 +140,8 @@ static device *create_nvgre_if(uint8_t *vsid)
 		log_err("Cannot rename tap interface\n");
 		strncpy(tap->name, oldName, IFNAMSIZ-1);
 	}
-#endif
-#endif
+#endif /* OS_DARWIN */
+#endif /* OS_LINUX */
 
 	tap_up(tap->name);
 	get_mac(tap->sock, tap->name, tap->hwaddr);
@@ -166,7 +166,7 @@ nvgre_i *add_nvi(char *buf, uint8_t *vsid, struct sockaddr_storage maddr)
 		return NULL;
 #else
 		log_binfo(buf, "So, The problem may be caused by interoperability.\nBut in this program, you can use these VSID\n");
-#endif
+#endif /* BASE_ON_RFC */
 	}
 
 	nvgre_i *v = (nvgre_i *)malloc(sizeof(nvgre_i));
@@ -226,7 +226,7 @@ void del_nvi(char *buf, uint8_t *vsid)
 	close(nvgre.nvi[vsid[0]][vsid[1]][vsid[2]]->tap->sock);
 #ifndef OS_LINUX
 	tap_destroy(nvgre.nvi[vsid[0]][vsid[1]][vsid[2]]->tap->name);
-#endif
+#endif /* OS_LINUX */
 	free(nvgre.nvi[vsid[0]][vsid[1]][vsid[2]]->tap);
 	free(nvgre.nvi[vsid[0]][vsid[1]][vsid[2]]);
 	nvgre.nvi[vsid[0]][vsid[1]][vsid[2]] = NULL;
@@ -260,4 +260,7 @@ void sig_catch(int sig)
 	exit(EXIT_SUCCESS);
 }
 
-#endif
+#endif /* OS_LINUX */
+
+
+

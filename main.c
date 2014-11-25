@@ -7,7 +7,7 @@
 
 #ifndef OS_LINUX
 #include <signal.h>
-#endif
+#endif /* OS_LINUX */
 
 #include "base.h"
 #include "log.h"
@@ -77,11 +77,11 @@ int main(int argc, char *argv[])
 			sigaction(SIGTERM, &sa, NULL) < 0)
 		log_perr("signal");
 
-#endif
+#endif /* OS_LINUX */
 
 #ifdef DEBUG
 	enable_debug();
-#endif
+#endif /* DEBUG */
 
 	while ((opt = getopt_long(argc, argv, "c:dDhi:m:p:s:v", options, NULL)) != -1) {
 		switch (opt) {
@@ -95,7 +95,7 @@ int main(int argc, char *argv[])
 			case 'D':
 				enable_D = 1;
 				break;
-#endif
+#endif /* DEBUG */
 			case 'h':
 				usage(argv[0]);
 				break;
@@ -190,7 +190,7 @@ void usage(char *bin) {
 	fprintf(stderr, "        -d                       : Enable daemon mode\n");
 #ifdef DEBUG
 	fprintf(stderr, "        -D                       : Enable debug mode\n");
-#endif
+#endif /* DEBUG */
 	fprintf(stderr, "        -h                       : Show this help\n");
 	fprintf(stderr, "        -i <interface>           : Set multicast interface\n");
 	fprintf(stderr, "        -m <multicast address>   : Set multicast address\n");
