@@ -34,7 +34,9 @@ static char _h_name[_POSIX_HOST_NAME_MAX];
 static char _h_name[HOST_NAME_MAX];		// Host Name
 #endif /* OS_LINUX */
 
-static int _debug_mode = DEBUG_DISABLE;
+#ifdef DEBUG
+int debug_mode = DEBUG_DISABLE;
+#endif /* DEBUG */
 
 static char line[LOG_LINELEN];
 
@@ -60,24 +62,28 @@ void log_pcexit(const char *str);
  *
  */
 
+#ifdef DEBUG
+
 void enable_debug(void)
 {
-	_debug_mode = DEBUG_ENABLE;
+	debug_mode = DEBUG_ENABLE;
 }
 
 
 
 void disable_debug(void)
 {
-	_debug_mode = DEBUG_DISABLE;
+	debug_mode = DEBUG_DISABLE;
 }
 
 
 
 int get_status(void)
 {
-	return _debug_mode;
+	return debug_mode;
 }
+
+#endif /* DEBUG */
 
 
 
@@ -134,18 +140,17 @@ void log_stderr(const char *fmt, ...)
 
 
 
+#ifdef DEBUG
 void log_debug(const char *fmt, ...)
 {
-#ifdef DEBUG
-	if (_debug_mode == DEBUG_ENABLE) {
+	if (debug_mode == DEBUG_ENABLE) {
 		va_list ap;
 		va_start(ap, fmt);
 		_print_log_v(LOG_DEBUG, fmt, ap);
 		va_end(ap);
 	}
-#endif /* DEBUG */
-
 }
+#endif /* DEBUG */
 
 
 
@@ -348,7 +353,6 @@ static void _print_log_v(int level, const char *fmt, va_list ap)
 #ifndef DEBUG
 	}
 #endif /* DEBUG */
-
 }
 
 
@@ -356,7 +360,9 @@ static void _print_log_v(int level, const char *fmt, va_list ap)
 static char *_get_facility(int level)
 {
 	switch (level) {
+#ifdef DEEBUG
 		case LOG_DEBUG: return "debug";
+#endif /* DEBUG */
 		case LOG_INFO: return "info";
 		case LOG_WARNING: return "warn";
 		case LOG_ERR: return "error";

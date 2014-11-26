@@ -10,6 +10,10 @@
 #include "table.h"
 #include "util.h"
 
+#ifdef DEBUG
+#include "log.h"
+#endif
+
 
 
 #define TABLE_MIN	1024
@@ -101,8 +105,10 @@ int add_data(list **table, uint8_t *hw_addr, struct sockaddr_storage *addr)
 	list *head = *root;
 
 #ifdef DEBUG
-	printf("MAC: %02X%02X:%02X%02X:%02X%02X\n", hw_addr[0], hw_addr[1], hw_addr[2],
-			hw_addr[3], hw_addr[4], hw_addr[5]);
+	if (get_status()) {
+		printf("MAC: %02X%02X:%02X%02X:%02X%02X\n", hw_addr[0], hw_addr[1], hw_addr[2],
+				hw_addr[3], hw_addr[4], hw_addr[5]);
+	}
 #endif /* DEBUG */
 
 	if (lp == NULL) {

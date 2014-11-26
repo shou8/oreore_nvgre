@@ -155,6 +155,7 @@ int inner_loop(nvgre_i *nvi)
 
 
 #ifdef DEBUG
+
 static void print_nvgre_hdr(struct nvgre_hdr *nvhdr, FILE *fp)
 {
 	fprintf(fp, "===== nvgre_header =====\n");
@@ -165,6 +166,7 @@ static void print_nvgre_hdr(struct nvgre_hdr *nvhdr, FILE *fp)
 	fprintf(fp, "protocol: 0x%04X\n", ntohs(nvhdr->protocol_type));
 	fprintf(fp, "flowid  : 0x%02X\n", nvhdr->flowid);
 } 
+
 #endif /* DEBUG */
 
 

@@ -102,8 +102,10 @@ int join_mcast4_group(int sock, struct in_addr *maddr, char *if_name)
 	mreq.imr_interface = (if_name != NULL) ? get_addr(if_name) : inaddr_any;
 
 #ifdef DEBUG
-	inet_ntop(AF_INET, &mreq.imr_multiaddr, maddr_s, sizeof(maddr_s));
-	log_debug("Join mcast_addr4 : %s\n", maddr_s);
+	if (get_status()) {
+		inet_ntop(AF_INET, &mreq.imr_multiaddr, maddr_s, sizeof(maddr_s));
+		log_debug("Join mcast_addr4 : %s\n", maddr_s);
+	}
 #endif /* DEBUG */
 	
 	if (setsockopt(sock, IPPROTO_IP, IP_ADD_MEMBERSHIP, (char *)&mreq, sizeof(mreq)) < 0) {
@@ -141,8 +143,10 @@ int leave_mcast4_group(int sock, struct in_addr *maddr, char *if_name)
 	mreq.imr_interface = get_addr(if_name);
 
 #ifdef DEBUG
-	inet_ntop(AF_INET, &mreq.imr_multiaddr, maddr_s, sizeof(maddr_s));
-	log_debug("Leave mcast_addr4: %s\n", maddr_s);
+	if (get_status()) {
+		inet_ntop(AF_INET, &mreq.imr_multiaddr, maddr_s, sizeof(maddr_s));
+		log_debug("Leave mcast_addr4: %s\n", maddr_s);
+	}
 #endif /* DEBUG */
 
 	if (setsockopt(sock, IPPROTO_IP, IP_DROP_MEMBERSHIP, (char *)&mreq, sizeof(mreq)) < 0) {
@@ -169,8 +173,10 @@ int join_mcast6_group(int sock, struct in6_addr *maddr, char *if_name)
 	mreq6.ipv6mr_interface = (if_name != NULL) ? if_nametoindex(if_name) : 0;
 
 #ifdef DEBUG
-	inet_ntop(AF_INET6, &mreq6.ipv6mr_multiaddr, maddr_s, sizeof(maddr_s));
-	log_debug("Join mcast_addr6 : %s\n", maddr_s);
+	if (get_status()) {
+		inet_ntop(AF_INET6, &mreq6.ipv6mr_multiaddr, maddr_s, sizeof(maddr_s));
+		log_debug("Join mcast_addr6 : %s\n", maddr_s);
+	}
 #endif /* DEBUG */
 
 	if (setsockopt(sock, IPPROTO_IPV6, IPV6_MULTICAST_IF, (char *)&mreq6.ipv6mr_interface, sizeof(mreq6.ipv6mr_interface)) < 0) {
@@ -209,8 +215,10 @@ int leave_mcast6_group(int sock, struct in6_addr *maddr, char *if_name)
 	mreq6.ipv6mr_interface = (if_name != NULL) ? if_nametoindex(if_name) : 0;
 
 #ifdef DEBUG
-	inet_ntop(AF_INET6, &mreq6.ipv6mr_multiaddr, maddr_s, sizeof(maddr_s));
-	log_debug("Join mcast_addr6 : %s\n", maddr_s);
+	if (get_status()) {
+		inet_ntop(AF_INET6, &mreq6.ipv6mr_multiaddr, maddr_s, sizeof(maddr_s));
+		log_debug("Join mcast_addr6 : %s\n", maddr_s);
+	}
 #endif /* DEBUG */
 
 #ifdef OS_LINUX

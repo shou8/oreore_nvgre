@@ -61,7 +61,9 @@ int main(int argc, char *argv[])
 
 	char pid_path[DEFAULT_BUFLEN] = DEFAULT_PID_FILE;
 
-	enable_debug();
+#ifdef DEBUG
+	disable_debug();
+#endif /* DEBUG */
 	enable_syslog();
 
 #ifndef OS_LINUX
@@ -78,10 +80,6 @@ int main(int argc, char *argv[])
 		log_perr("signal");
 
 #endif /* OS_LINUX */
-
-#ifdef DEBUG
-	enable_debug();
-#endif /* DEBUG */
 
 	while ((opt = getopt_long(argc, argv, "c:dDhi:m:p:s:v", options, NULL)) != -1) {
 		switch (opt) {
@@ -134,7 +132,9 @@ int main(int argc, char *argv[])
 		}
 	}
 
+#ifdef DEBUG
 	if ( enable_D != 0 ) enable_debug();
+#endif /* DEBUG */
 	if ( enable_i != 0 ) {
 		if (nvgre.if_name == NULL)
 			nvgre.if_name = (char *)malloc(sizeof(char) * DEFAULT_BUFLEN);
@@ -148,7 +148,9 @@ int main(int argc, char *argv[])
 	if ( enable_s != 0 ) strncpy(nvgre.udom, optarg, DEFAULT_BUFLEN);
 
 	if ( enable_d && enable_D ) {
+#ifdef DEBUG
 		disable_debug();
+#endif /* DEBUG */
 		enable_syslog();
 		log_warn("Incompatible option \"-d\" and \"-D\", \"-d\" has priority over \"-D\".");
 		log_warn("Because this process writes many debug information on /dev/null\n");

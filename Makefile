@@ -21,6 +21,9 @@ PREFIX=/usr/local/bin
 SCRIPT_DIR=script
 LSB_SCRIPT=nvgred
 INIT_DIR=/etc/init.d
+ifeq (${OS_TYPE}, FreeBSD)
+	INIT_DIR=/etc/rc.d
+endif
 CONFIG_SRC=./conf/nvgre.conf
 CONFIG_DST=/etc/nvgre.conf
 
