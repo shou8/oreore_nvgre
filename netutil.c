@@ -169,7 +169,7 @@ void print_eth_h(struct ether_header *eh, FILE *fp)
 	uint16_t eth_type = ntohs(eh->ether_type);
 	char buf[128];
 
-	fprintf(fp, "ether_header -----\n");
+	fprintf(fp, "===== ether_header =====\n");
 	fprintf(fp, "ether_dhost: %s\n", eth_ntoa(eh->ether_dhost, buf, sizeof(buf)));
 	fprintf(fp, "ether_shost: %s\n", eth_ntoa(eh->ether_shost, buf, sizeof(buf)));
 	fprintf(fp, "ether_type : ");
