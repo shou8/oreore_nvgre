@@ -28,6 +28,7 @@
 
 #ifdef DEBUG
 static void print_nvgre_hdr(struct nvgre_hdr *nvhdr, FILE *fp);
+static void print_saddr(struct sockaddr_storage *saddr, FILE *fp);
 #endif /* DEBUG */
 
 
@@ -139,11 +140,19 @@ int inner_loop(nvgre_i *nvi)
 #endif /* DEBUG */
 		data = find_data(nvi->table, eh->ether_dhost);
 		if (data == NULL) {
+#ifdef DEBUG
+			if (get_status())
+				print_saddr(&nvi->maddr, stdout);
+#endif /* DEBUG */
 			if (sendto(nvgre.sock, buf, len, MSG_DONTWAIT, (struct sockaddr *)&nvi->maddr, sizeof(nvi->maddr)) < 0)
 				log_perr("inner_loop.sendto");
 			continue;
 		}
 
+#ifdef DEBUG
+			if (get_status())
+				print_saddr(&data->addr, stdout);
+#endif /* DEBUG */
 		if (sendto(nvgre.sock, buf, len, MSG_DONTWAIT, (struct sockaddr *)&data->addr, sizeof(data->addr)) < 0)
 			log_perr("inner_loop.sendto");
 	}
@@ -166,6 +175,14 @@ static void print_nvgre_hdr(struct nvgre_hdr *nvhdr, FILE *fp)
 	fprintf(fp, "protocol: 0x%04X\n", ntohs(nvhdr->protocol_type));
 	fprintf(fp, "flowid  : 0x%02X\n", nvhdr->flowid);
 } 
+
+
+
+static void print_saddr(struct sockaddr_storage *saddr, FILE *fp)
+{
+	fprintf(fp, "==== socket address ====\n");
+	fprintf(fp, "dest    : %s\n", get_straddr(saddr));
+}
 
 #endif /* DEBUG */
 
