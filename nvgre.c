@@ -291,7 +291,7 @@ void destroy_nvgre(void)
 					else
 						leave_mcast6_group(nvgre.sock, &((struct sockaddr_in6 *)(&nvgre.nvi[i][j][k]->maddr))->sin6_addr, nvgre.if_name);
 					close(nvgre.nvi[i][j][k]->tap->sock);
-					tap_destroy(nvgre.nvi[i][j][k]->tap->name);
+//					tap_destroy(nvgre.nvi[i][j][k]->tap->name);
 					free(nvgre.nvi[i][j][k]->tap);
 					free(nvgre.nvi[i][j][k]);
 				}

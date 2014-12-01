@@ -133,6 +133,7 @@ int tap_down(char *dev)
 
 
 #ifndef OS_LINUX
+
 void tap_destroy(char *dev)
 {
 	int fd;
