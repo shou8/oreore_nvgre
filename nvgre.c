@@ -54,6 +54,7 @@ static device *create_nvgre_if(uint8_t *vsid);
  *
  *		@INFO
  */
+
 int init_nvgre(void)
 {
 	init_nvi();
@@ -90,6 +91,7 @@ int init_nvgre(void)
  *		@INFO
  *			Create 3 Demention Matrix
  */
+
 static void init_nvi(void)
 {
 	nvgre.nvi = (nvgre_i ****)malloc(sizeof(nvgre_i ***) * NUMOF_UINT8);
@@ -217,6 +219,7 @@ nvgre_i *add_nvi(char *buf, uint8_t *vsid, struct sockaddr_storage maddr)
  *		@INFO
  *			Delete NVGRE instance function
  */
+
 void del_nvi(char *buf, uint8_t *vsid)
 {
 	sa_family_t family = nvgre.nvi[vsid[0]][vsid[1]][vsid[2]]->maddr.ss_family;
@@ -227,6 +230,7 @@ void del_nvi(char *buf, uint8_t *vsid)
 	 * This process is searching the other instance joining multicast group
 	 * But, full search is too inefficient.
 	 */
+
 	if (memcmp(&nvgre.nvi[vsid[0]][vsid[1]][vsid[2]]->maddr, &nvgre.maddr, sizeof(struct sockaddr_storage)) != 0) {
 		int i, j, k;
 		for (i=0; i<NUMOF_UINT8; i++) {
@@ -272,6 +276,7 @@ void del_nvi(char *buf, uint8_t *vsid)
  *		@INFO
  *			Cleanup(destroy) instance
  */
+
 void destroy_nvgre(void)
 {
 	int i, j, k;
