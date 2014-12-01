@@ -258,8 +258,6 @@ void del_nvi(char *buf, uint8_t *vsid)
 
 
 
-#ifndef OS_LINUX
-
 /*
  * destroy_nvgre
  *
@@ -303,6 +301,8 @@ void destroy_nvgre(void)
 }
 
 
+
+#ifndef OS_LINUX
 
 void sig_catch(int sig)
 {
