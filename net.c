@@ -44,6 +44,7 @@ static void print_saddr(struct sockaddr_storage *saddr, FILE *fp);
  *		@INFO
  *			Receive nvgre packet and write data to instance's NIC
  */
+
 int outer_loop(int soc)
 {
 
@@ -126,6 +127,7 @@ int outer_loop(int soc)
 	/*
 	 * Unreachable
 	 */
+
 	return 0;
 }
 
@@ -142,6 +144,7 @@ int outer_loop(int soc)
  *		@INFO
  *			Forward packet added nvgre header to WAN from instance's NIC
  */
+
 int inner_loop(nvgre_i *nvi)
 {
 	char buf[BUF_SIZE];
@@ -207,6 +210,7 @@ int inner_loop(nvgre_i *nvi)
 	/*
 	 * Unreachable
 	 */
+
 	return 0;
 }
 
@@ -228,6 +232,7 @@ int inner_loop(nvgre_i *nvi)
  *		@INFO
  *			For debug, print nvgre header information function
  */
+
 static void print_nvgre_hdr(struct nvgre_hdr *nvhdr, FILE *fp)
 {
 	fprintf(fp, "===== nvgre_header =====\n");
@@ -254,6 +259,7 @@ static void print_nvgre_hdr(struct nvgre_hdr *nvhdr, FILE *fp)
  *		@INFO
  *			For debug, print destination address function
  */
+
 static void print_saddr(struct sockaddr_storage *saddr, FILE *fp)
 {
 	fprintf(fp, "==== socket address ====\n");

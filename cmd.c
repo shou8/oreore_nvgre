@@ -140,6 +140,7 @@ void ctl_loop(char *dom)
  * If inner_loop is not infinite loop,
  * you have to use "malloc" to allocate to heap area.
  */
+
 void *inner_loop_thread(void *args)
 {
 	uint8_t vsid[VSID_BYTE];
