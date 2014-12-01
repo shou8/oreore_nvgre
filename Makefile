@@ -4,6 +4,7 @@ SRCS=${OBJS:%.o=%.c}
 DEPS=$(OBJS:%.o=%.d)
 LDLIBS=-lpthread
 DAEMON=nvgred
+EXTRA_FLAG=-O2
 #DEBUG_FLAG=-g -DDEBUG
 CFLAGS=-Wall -MMD
 CONTROLER=nvconfig
@@ -30,7 +31,7 @@ CONFIG_DST=/etc/nvgre.conf
 .SUFFIXES: .c .o
 
 .c.o:
-	${CC} ${CFLAGS} ${DEBUG_FLAG} -c $< ${LDFLAGS}
+	${CC} ${CFLAGS} ${EXTRA_FLAG} -c $< ${LDFLAGS}
 
 .PHONY: all debug clean test install uninstall
 
@@ -38,16 +39,16 @@ all:${DAEMON} ${CONTROLER}
 -include $(DEPS)
 
 ${DAEMON}:${OBJS}
-	${CC} ${CFLAGS} ${DEBUG_FLAG} -o $@ $^ ${LDLIBS} ${LDFLAGS}
+	${CC} ${CFLAGS} ${EXTRA_FLAG} -o $@ $^ ${LDLIBS} ${LDFLAGS}
 
 ${CONTROLER}:${CONTROLER_OBJS}
-	${CC} ${CFLAGS} ${DEBUG_FLAG} -o $@ $^ ${LDFLAGS}
+	${CC} ${CFLAGS} ${EXTRA_FLAG} -o $@ $^ ${LDFLAGS}
 
 debug:
-	${MAKE} DEBUG_FLAG="-g -DDEBUG -O0" OBJS="${OBJS}"
+	${MAKE} EXTRA_FLAG="-g -DDEBUG -O0" OBJS="${OBJS}"
 
 netdebug:
-	${MAKE} DEBUG_FLAG="-g -DDEBUG -O0" OBJS="${OBJS}"
+	${MAKE} EXTRA_FLAG="-g -DDEBUG -O0" OBJS="${OBJS}"
 #	@cd test && ${MAKE}
 
 clean:
