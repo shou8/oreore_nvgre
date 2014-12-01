@@ -42,6 +42,18 @@ static device *create_nvgre_if(uint8_t *vsid);
 
 
 
+/*
+ * init_nvgre
+ *
+ *		@ARG
+ *			void
+ *
+ *		@RET
+ *			int 0		: Success
+ *				other	: Failed
+ *
+ *		@INFO
+ */
 int init_nvgre(void)
 {
 	init_nvi();
@@ -73,7 +85,10 @@ int init_nvgre(void)
 
 
 /*
- * Create 3 Demention Matrix
+ * init_nvi
+ *
+ *		@INFO
+ *			Create 3 Demention Matrix
  */
 static void init_nvi(void)
 {
@@ -92,16 +107,6 @@ static void init_nvi(void)
 	}
 
 	memset(nvgre.nvi[0][0], 0, sizeof(nvgre_i *) * NUMOF_UINT8 * NUMOF_UINT8 * NUMOF_UINT8);
-}
-
-
-
-void destroy_nvgre(void)
-{
-	free(nvgre.nvi[0][0]);
-	free(nvgre.nvi[0]);
-	free(nvgre.nvi);
-	nvgre.nvi = NULL;
 }
 
 
@@ -199,10 +204,29 @@ nvgre_i *add_nvi(char *buf, uint8_t *vsid, struct sockaddr_storage maddr)
 
 
 
+/*
+ * del_nvi
+ *
+ *		@ARGV
+ *			char *buf: message buffer
+ *			uint8_t *vsid: Instance ID
+ *
+ *		@RET
+ *			void
+ *
+ *		@INFO
+ *			Delete NVGRE instance function
+ */
 void del_nvi(char *buf, uint8_t *vsid)
 {
 	sa_family_t family = nvgre.nvi[vsid[0]][vsid[1]][vsid[2]]->maddr.ss_family;
 
+	/*
+	 * TODO
+	 *
+	 * This process is searching the other instance joining multicast group
+	 * But, full search is too inefficient.
+	 */
 	if (memcmp(&nvgre.nvi[vsid[0]][vsid[1]][vsid[2]]->maddr, &nvgre.maddr, sizeof(struct sockaddr_storage)) != 0) {
 		int i, j, k;
 		for (i=0; i<NUMOF_UINT8; i++) {
@@ -236,26 +260,52 @@ void del_nvi(char *buf, uint8_t *vsid)
 
 #ifndef OS_LINUX
 
-void destroy_nvgre_all(void)
+/*
+ * destroy_nvgre
+ *
+ *		@ARGV
+ *			void
+ *
+ *		@RET
+ *			void
+ *
+ *		@INFO
+ *			Cleanup(destroy) instance
+ */
+void destroy_nvgre(void)
 {
 	int i, j, k;
 
 	for (i=0; i<NUMOF_UINT8; i++) {
 		for (j=0; j<NUMOF_UINT8; j++) {
 			for (k=0; k<NUMOF_UINT8; k++) {
-				if (nvgre.nvi[i][j][k] == NULL) continue;
-				tap_destroy(nvgre.nvi[i][j][k]->tap->name);
-				free(nvgre.nvi[i][j][k]->tap);
+				if (nvgre.nvi[i][j][k] != NULL) {
+					nvgre_i *v = nvgre.nvi[i][j][k];
+					pthread_cancel(v->th);
+
+					if (nvgre.nvi[i][j][k]->maddr.ss_family == AF_INET)
+						leave_mcast4_group(nvgre.sock, &((struct sockaddr_in *)(&nvgre.nvi[i][j][k]->maddr))->sin_addr, nvgre.if_name);
+					else
+						leave_mcast6_group(nvgre.sock, &((struct sockaddr_in6 *)(&nvgre.nvi[i][j][k]->maddr))->sin6_addr, nvgre.if_name);
+					close(nvgre.nvi[i][j][k]->tap->sock);
+					tap_destroy(nvgre.nvi[i][j][k]->tap->name);
+					free(nvgre.nvi[i][j][k]->tap);
+					free(nvgre.nvi[i][j][k]);
+				}
 			}
 		}
 	}
+
+	free(nvgre.nvi[0][0]);
+	free(nvgre.nvi[0]);
+	free(nvgre.nvi);
+	nvgre.nvi = NULL;
 }
 
 
 
 void sig_catch(int sig)
 {
-	destroy_nvgre_all();
 	destroy_nvgre();
 	exit(EXIT_SUCCESS);
 }

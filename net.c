@@ -33,6 +33,17 @@ static void print_saddr(struct sockaddr_storage *saddr, FILE *fp);
 
 
 
+/*
+ * outer_loop
+ *
+ *		@ARGV
+ *			int socket: descripter
+ *		@RET
+ *			int 
+ *
+ *		@INFO
+ *			Receive nvgre packet and write data to instance's NIC
+ */
 int outer_loop(int soc)
 {
 
@@ -45,14 +56,14 @@ int outer_loop(int soc)
 
 	while (1)
 	{
+		// Receive nvgre packet (This is including outer L3, nvgre, inner L2, inner L3 and payload)
 		if ((len = recvfrom(soc, buf, rlen, 0,
 						(struct sockaddr *)&src, &addrlen)) < 0)
 			log_perr("recvfrom");
 
 		/* IP */
-/*
- * Linux Only
- */
+
+		// Skip over IP header
 #ifdef OS_LINUX
 		struct iphdr *iphdr = (struct iphdr *)buf;
 		size_t iph_len = iphdr->ihl * 4;
@@ -64,6 +75,7 @@ int outer_loop(int soc)
 		len -= iph_len;
 
 #ifdef DEBUG
+		// IP checksum
 		if (get_status()) {
 			uint16_t sum = checksum((uint16_t *)iphdr, iph_len); fprintf(stdout, "=====  ip_header  ======\n");
 			fprintf(stdout, "checksum: 0x%04X\n", sum);
@@ -75,24 +87,33 @@ int outer_loop(int soc)
 #endif /* DEBUG */
 
 		/* NVGRE */
+
+		// nvgre header check
 		struct nvgre_hdr *nvhdr = (struct nvgre_hdr *)bp;
-		bp += sizeof(struct nvgre_hdr);
-		len -= sizeof(struct nvgre_hdr);
 
 #ifdef DEBUG
 		if (get_status())
 			print_nvgre_hdr(nvhdr, stdout);
 #endif /* DEBUG */
 
+		if (nvhdr->flags.byte != NVGRE_FLAGS)
+			continue;
+
+		bp += sizeof(struct nvgre_hdr);
+		len -= sizeof(struct nvgre_hdr);
+
+		// Search nvgre instance
 		nvgre_i *nins = nvgre.nvi[nvhdr->vsid[0]][nvhdr->vsid[1]][nvhdr->vsid[2]];
 		if (nins == NULL) continue;
 
+		// Regist MAC address
 		struct ether_header *eh = (struct ether_header *)bp;
 		if (add_data(nins->table, eh->ether_shost, &src) < 0) {
 			log_crit("Failed to add data (add_data)\n");
 			continue;
 		}
 
+		// Write payload
 		if (write(nins->tap->sock, bp, len) < 0)
 			log_perr("write");
 
@@ -101,10 +122,26 @@ int outer_loop(int soc)
 			print_eth_h(eh, stdout);
 #endif /* DEBUG */
 	}
+
+	/*
+	 * Unreachable
+	 */
+	return 0;
 }
 
 
 
+/*
+ * inner_loop
+ *
+ *		@ARGV
+ *			nvgre_i *nvi: nvgre instance information
+ *		@RET
+ *			int
+ *
+ *		@INFO
+ *			Forward packet added nvgre header to WAN from instance's NIC
+ */
 int inner_loop(nvgre_i *nvi)
 {
 	char buf[BUF_SIZE];
@@ -117,9 +154,11 @@ int inner_loop(nvgre_i *nvi)
 
 	while (1)
 	{
+		// Receive normal packet (This is including inner L2, inner L3 and payload)
 		if ((len = read(nvi->tap->sock, rp, rlen)) < 0)
 			log_perr("inner_loop.read");
 
+		// Adding nvgre header
 		memset(nvh, 0, sizeof(struct nvgre_hdr));
 		nvh->flags.byte = NVGRE_FLAGS;
 		nvh->ver.byte = NVGRE_VERSION;
@@ -135,28 +174,39 @@ int inner_loop(nvgre_i *nvi)
 		struct ether_header *eh = (struct ether_header *)rp;
 
 #ifdef DEBUG
+		// Print ether Header
 		if (get_status())
 			print_eth_h(eh, stdout);
 #endif /* DEBUG */
+
 		data = find_data(nvi->table, eh->ether_dhost);
 		if (data == NULL) {
+
 #ifdef DEBUG
+			// Print destination address (multicast)
 			if (get_status())
 				print_saddr(&nvi->maddr, stdout);
 #endif /* DEBUG */
+
 			if (sendto(nvgre.sock, buf, len, MSG_DONTWAIT, (struct sockaddr *)&nvi->maddr, sizeof(nvi->maddr)) < 0)
 				log_perr("inner_loop.sendto");
 			continue;
+
 		}
 
 #ifdef DEBUG
-			if (get_status())
-				print_saddr(&data->addr, stdout);
+		// Print destination address (unicast)
+		if (get_status())
+			print_saddr(&data->addr, stdout);
 #endif /* DEBUG */
+
 		if (sendto(nvgre.sock, buf, len, MSG_DONTWAIT, (struct sockaddr *)&data->addr, sizeof(data->addr)) < 0)
 			log_perr("inner_loop.sendto");
 	}
 
+	/*
+	 * Unreachable
+	 */
 	return 0;
 }
 
@@ -165,6 +215,19 @@ int inner_loop(nvgre_i *nvi)
 
 #ifdef DEBUG
 
+/*
+ * print_nvgre_hdr
+ *
+ *		@ARGV
+ *			struct nvgre_hdr *nvhdr: nvgre header
+ *			FILE *fp: To output file descripter
+ *
+ *		@RET
+ *			void
+ *
+ *		@INFO
+ *			For debug, print nvgre header information function
+ */
 static void print_nvgre_hdr(struct nvgre_hdr *nvhdr, FILE *fp)
 {
 	fprintf(fp, "===== nvgre_header =====\n");
@@ -178,6 +241,19 @@ static void print_nvgre_hdr(struct nvgre_hdr *nvhdr, FILE *fp)
 
 
 
+/*
+ * print_saddr
+ *
+ *		@ARGV
+ *			struct sockaddr_storage *saddr: socket information
+ *			FILE *fp: To output file descripter
+ *
+ *		@RET
+ *			void
+ *		
+ *		@INFO
+ *			For debug, print destination address function
+ */
 static void print_saddr(struct sockaddr_storage *saddr, FILE *fp)
 {
 	fprintf(fp, "==== socket address ====\n");
