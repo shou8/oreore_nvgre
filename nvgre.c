@@ -141,11 +141,11 @@ static device *create_nvgre_if(uint8_t *vsid)
 	 */
 	char oldName[IFNAMSIZ];
 
-	strncpy(oldName, tap->name, IFNAMSIZ-1);
+	strlcpy(oldName, tap->name, IFNAMSIZ-1);
 	snprintf(tap->name, IFNAMSIZ-1, TAP_BASE_NAME"%"PRIu32, vsid32);
 	if (tap_rename(oldName, tap->name) < 0) {
 		log_err("Cannot rename tap interface\n");
-		strncpy(tap->name, oldName, IFNAMSIZ-1);
+		strlcpy(tap->name, oldName, IFNAMSIZ-1);
 	}
 #endif /* OS_DARWIN */
 #endif /* OS_LINUX */

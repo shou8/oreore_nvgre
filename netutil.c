@@ -90,7 +90,7 @@ struct in_addr get_addr(char *if_name)
 		log_pcexit("socket");
 
 	memset(&ifr, 0, sizeof(struct ifreq));
-	strncpy(ifr.ifr_name, if_name, IF_NAMESIZE-1);
+	strlcpy(ifr.ifr_name, if_name, IF_NAMESIZE-1);
 	if (ioctl(fd, SIOCGIFADDR, &ifr) == -1) {
 		close(fd);
 		log_pcexit("ioctl");
@@ -110,7 +110,7 @@ uint8_t *get_mac(int sock, char *name, uint8_t *hwaddr)
 //	uint8_t *addr;
 	struct ifreq ifreq;
 
-	strncpy(ifreq.ifr_name, name, sizeof(ifreq.ifr_name) - 1);
+	strlcpy(ifreq.ifr_name, name, sizeof(ifreq.ifr_name) - 1);
 	if ( ioctl(sock, SIOCGIFHWADDR, &ifreq) == -1 ) {
 		log_pcrit("ioctl");
 		close(sock);

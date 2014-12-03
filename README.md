@@ -9,4 +9,4 @@ root# make install
 
 ## How to use
 
-root# 
+root# nvgred
