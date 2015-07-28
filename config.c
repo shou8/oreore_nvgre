@@ -97,7 +97,7 @@ int get_config(char *config_path, struct config *conf)
 
 		conf[len].param_no = i;
 		conf[len].line_no = line_no;
-		strlcpy(conf[len].value, val_c, DEFAULT_BUFLEN);
+		StrCpy(conf[len].value, val_c, sizeof(char) * DEFAULT_BUFLEN);
 		len++;
 	}
 
@@ -165,15 +165,15 @@ int set_config(struct config *conf)
 {
 	switch (conf->param_no) {
 		case 0:
-			strlcpy(nvgre.cmaddr, conf->value, DEFAULT_BUFLEN);
+			StrCpy(nvgre.cmaddr, conf->value, sizeof(char) * DEFAULT_BUFLEN);
 			break;
 		case 1:
 			if (nvgre.if_name == NULL)
 				nvgre.if_name = (char *)malloc(sizeof(char) * DEFAULT_BUFLEN);
-			strlcpy(nvgre.if_name, conf->value, DEFAULT_BUFLEN);
+			StrCpy(nvgre.if_name, conf->value, sizeof(char) * DEFAULT_BUFLEN);
 			break;
 		case 2:
-			strlcpy(nvgre.udom, conf->value, DEFAULT_BUFLEN);
+			StrCpy(nvgre.udom, conf->value, sizeof(char) * DEFAULT_BUFLEN);
 			break;
 		case 3: {
 			char *argv[] = {"create", conf->value};

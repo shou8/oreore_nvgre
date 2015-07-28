@@ -30,6 +30,19 @@
 
 
 
+// For NULL-Terminated
+#ifdef OS_LINUX
+#define StrCpy(dst, src, len)				\
+	do {									\
+		strncpy((dst), (src), (len - 1));	\
+		*((dst) + sizeof(dst) - 1) = '\0';	\
+	} while(0)
+#else
+#define StrCpy(dst, src, len) (strlcpy((dst), (src), (len)))
+#endif /* OS_LINUX */
+
+
+
 typedef struct _device_ {
 	int sock;
 	char name[IFNAMSIZ];

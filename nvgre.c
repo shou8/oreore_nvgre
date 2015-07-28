@@ -26,7 +26,6 @@ nvgred nvgre = {
 	DEFAULT_MCAST_ADDR6,
 //	DEFAULT_MCAST_ADDR4,
 	{},
-
 	NULL,
 	NULL,
 	DEFAULT_UNIX_DOMAIN,
@@ -141,11 +140,11 @@ static device *create_nvgre_if(uint8_t *vsid)
 	 */
 	char oldName[IFNAMSIZ];
 
-	strlcpy(oldName, tap->name, IFNAMSIZ-1);
+	StrCpy(oldName, tap->name, sizeof(char) * IFNAMSIZ);
 	snprintf(tap->name, IFNAMSIZ-1, TAP_BASE_NAME"%"PRIu32, vsid32);
 	if (tap_rename(oldName, tap->name) < 0) {
 		log_err("Cannot rename tap interface\n");
-		strlcpy(tap->name, oldName, IFNAMSIZ-1);
+		StrCpy(tap->name, oldName, sizeof(char) * IFNAMSIZ);
 	}
 #endif /* OS_DARWIN */
 #endif /* OS_LINUX */

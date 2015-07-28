@@ -42,7 +42,7 @@ int str_cmp(const char *p1, const char *p2)
 /*
 char *pad_str(char *buf, const char *str) {
 
-	strlcpy(buf, str, CTL_BUFLEN);
+	StrCpy(buf, str, sizeof(char) * CTL_BUFLEN);
 	return buf + strlen(str);
 }
 */

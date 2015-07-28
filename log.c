@@ -263,7 +263,7 @@ void log_binfo(char *buf, const char *fmt, ...)
 	va_list ap;
 	va_start(ap, fmt);
 	_print_log_v(LOG_INFO, fmt, ap);
-	if (buf != NULL) strlcpy(buf, line, LOG_LINELEN);
+	if (buf != NULL) StrCpy(buf, line, sizeof(char) * LOG_LINELEN);
 	va_end(ap);
 }
 
@@ -274,7 +274,7 @@ void log_bwarn(char *buf, const char *fmt, ...)
 	va_list ap;
 	va_start(ap, fmt);
 	_print_log_v(LOG_WARNING, fmt, ap);
-	if (buf != NULL) strlcpy(buf, line, LOG_LINELEN);
+	if (buf != NULL) StrCpy(buf, line, sizeof(char) * LOG_LINELEN);
 	va_end(ap);
 }
 
@@ -285,7 +285,7 @@ void log_berr(char *buf, const char *fmt, ...)
 	va_list ap;
 	va_start(ap, fmt);
 	_print_log_v(LOG_ERR, fmt, ap);
-	if (buf != NULL) strlcpy(buf, line, LOG_LINELEN);
+	if (buf != NULL) StrCpy(buf, line, sizeof(char) * LOG_LINELEN);
 	va_end(ap);
 }
 
@@ -294,7 +294,7 @@ void log_berr(char *buf, const char *fmt, ...)
 void log_bperr(char *buf, const char *str)
 {
 	log_perr(str);
-	if (buf != NULL) strlcpy(buf, line, LOG_LINELEN);
+	if (buf != NULL) StrCpy(buf, line, sizeof(char) * LOG_LINELEN);
 }
 
 
@@ -316,7 +316,7 @@ static void _print_log(int level, const char *fmt, ...)
 		time_t t;
 
 		time(&t);
-		strlcpy(line, ctime(&t), sizeof(line));
+		StrCpy(line, ctime(&t), sizeof(char) * LOG_LINELEN);
 
 		int len = strlen(line);
 		line[len-1] = '\0';
@@ -344,7 +344,7 @@ static void _print_log_v(int level, const char *fmt, va_list ap)
 		time_t t;
 
 		time(&t);
-		strlcpy(line, ctime(&t), sizeof(line));
+		StrCpy(line, ctime(&t), sizeof(char) * LOG_LINELEN);
 
 		int len = strlen(line);
 		line[len-1] = '\0';

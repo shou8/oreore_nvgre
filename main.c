@@ -119,7 +119,7 @@ int main(int argc, char *argv[])
 	}
 
 	/* Get configuration */
-	if ( enable_c != 0 ) strlcpy(nvgre.conf_path, argv[enable_c], DEFAULT_BUFLEN);
+	if ( enable_c != 0 ) StrCpy(nvgre.conf_path, argv[enable_c], sizeof(char) * DEFAULT_BUFLEN);
 	struct config conf[DEFAULT_BUFLEN];
 	int len = get_config(nvgre.conf_path, conf);
 
@@ -138,14 +138,14 @@ int main(int argc, char *argv[])
 	if ( enable_i != 0 ) {
 		if (nvgre.if_name == NULL)
 			nvgre.if_name = (char *)malloc(sizeof(char) * DEFAULT_BUFLEN);
-		strlcpy(nvgre.if_name, argv[enable_i], DEFAULT_BUFLEN);
+		StrCpy(nvgre.if_name, argv[enable_i], sizeof(char) * DEFAULT_BUFLEN);
 	}
 	if ( enable_m != 0 )
-		strlcpy(nvgre.cmaddr, argv[enable_m], DEFAULT_BUFLEN);
+		StrCpy(nvgre.cmaddr, argv[enable_m], sizeof(char) * DEFAULT_BUFLEN);
 	else
 		log_info("Using default multicast address: %s\n", nvgre.cmaddr);
-	if ( enable_p != 0 ) strlcpy(pid_path, argv[enable_p], DEFAULT_BUFLEN);
-	if ( enable_s != 0 ) strlcpy(nvgre.udom, optarg, DEFAULT_BUFLEN);
+	if ( enable_p != 0 ) StrCpy(pid_path, argv[enable_p], sizeof(char) * DEFAULT_BUFLEN);
+	if ( enable_s != 0 ) StrCpy(nvgre.udom, optarg, sizeof(char) * DEFAULT_BUFLEN);
 
 	if ( enable_d && enable_D ) {
 #ifdef DEBUG

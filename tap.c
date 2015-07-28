@@ -29,7 +29,7 @@ int tap_alloc(char *dev)
 
 	memset(&ifr, 0, sizeof(ifr));
 	ifr.ifr_flags = IFF_TAP | IFF_NO_PI;
-	strlcpy(ifr.ifr_name, dev, IFNAMSIZ-1);
+	StrCpy(ifr.ifr_name, dev, sizeof(char) * IFNAMSIZ);
 
 	if (ioctl(fd, TUNSETIFF, (void *)&ifr) < 0) {
 		close(fd);
@@ -48,7 +48,7 @@ int tap_alloc(char *dev)
 			log_pcexit("socket");
 	
 		memset(&ifr, 0, sizeof(ifr));
-		strlcpy(ifr.ifr_name, dev, IFNAMSIZ-1);
+		StrCpy(ifr.ifr_name, dev, sizeof(char) * IFNAMSIZ-1);
 	
 		if (ioctl(fd, SIOCIFCREATE2, &ifr) == -1) {
 			log_pcrit("ioctl - SIOCIFCREATE2");
@@ -78,7 +78,7 @@ int tap_up(char *dev)
 	}
 
 	// Get Interface information by name
-	strlcpy(ifr.ifr_name, dev, IFNAMSIZ-1);
+	StrCpy(ifr.ifr_name, dev, sizeof(char) * IFNAMSIZ);
 	if (ioctl(fd, SIOCGIFFLAGS, &ifr) != 0) {
 		close(fd);
 		log_pcrit("ioctl - SIOCGIFFLAGS");
@@ -112,7 +112,7 @@ int tap_down(char *dev)
 		return -1;
 	}
 
-	strlcpy(ifr.ifr_name, dev, IFNAMSIZ-1);
+	StrCpy(ifr.ifr_name, dev, sizeof(char) * IFNAMSIZ);
 	if (ioctl(fd, SIOCGIFFLAGS, &ifr) != 0) {
 		close(fd);
 		log_pcrit("ioctl - SIOCGIFFLAGS");
@@ -144,7 +144,7 @@ void tap_destroy(char *dev)
 		return;
 	}
 
-	strlcpy(ifr.ifr_name, dev, IFNAMSIZ-1);
+	StrCpy(ifr.ifr_name, dev, sizeof(char) * IFNAMSIZ);
 	if (ioctl(fd, SIOCIFDESTROY, &ifr) != 0)
 		log_pcrit("ioctl - SIOCGIFDESTROY");
 
@@ -163,7 +163,7 @@ int tap_rename(char *oldName, char *newName)
 		log_pcexit("socket");
 
 	memset(&ifr, 0, sizeof(ifr));
-	strlcpy(ifr.ifr_name, oldName, IFNAMSIZ-1);
+	StrCpy(ifr.ifr_name, oldName, sizeof(char) * IFNAMSIZ);
 	ifr.ifr_data = newName;
 	if (ioctl(fd, SIOCSIFNAME, &ifr) < 0) {
 		log_perr("ioctl - SIOCSIFNAME");

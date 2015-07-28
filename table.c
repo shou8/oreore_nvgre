@@ -37,7 +37,7 @@ list **init_table(unsigned int size) // hash table size
 	table_size = size % UINT_MAX;
 	if (table_size < TABLE_MIN) table_size = TABLE_MIN;
 	unsigned int mem_size = table_size * sizeof(list *);
-	list **table = (list **)malloc(mem_size);
+	list **table = (list **)malloc(sizeof(list *) * mem_size);
 	if (table == NULL) return NULL;
 	memset(table, 0, mem_size);
 
