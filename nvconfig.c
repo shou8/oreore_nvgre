@@ -157,7 +157,7 @@ int argv_to1str(char *buf, int argc, char **argv)
 	for (i=0; i<argc; i++) {
 		if (p - buf > CTL_BUF_LEN) return -2;
 		len = strlen(argv[i]);
-		strlcpy(p, argv[i], len);
+		strncpy(p, argv[i], len);
 		p[len] = ' ';
 		p += len + 1;
 	}

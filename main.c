@@ -19,7 +19,7 @@
 
 
 
-#define NVGRE_PRODUCT_VERSION	"1.0"
+#define NVGRE_PRODUCT_VERSION	"1.1"
 
 
 
@@ -160,12 +160,14 @@ int main(int argc, char *argv[])
 	if (init_nvgre() < 0)
 		log_cexit("Failed to initialize nvgre\n");
 
+#ifndef OS_DARWIN
 	/* Daemon */
 	if ( enable_d ) {
 		if (daemon(1, 0) != 0) log_perr("daemon");
 		create_pid_file(pid_path);
 		disable_syslog();
 	}
+#endif /* OS_DARWIN */
 
 	/* Set parameter (After option) */
 	if (len > 0) {
