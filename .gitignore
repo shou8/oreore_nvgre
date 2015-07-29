@@ -1,7 +1,7 @@
 *.o
 *.d
-test/rawgen
-test/udpgen
+src/*.o
+src/*.d
 nvconfig
 nvgred
 core.*

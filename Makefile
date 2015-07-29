@@ -1,18 +1,23 @@
+# GCC
 CC=gcc
-OBJS=main.o log.o sock.o net.o util.o netutil.o table.o tap.o nvgre.o cmd.o config.o
-SRCS=${OBJS:%.o=%.c}
-DEPS=$(OBJS:%.o=%.d)
+VPATH=src
 LDLIBS=-lpthread
-DAEMON=nvgred
-EXTRA_FLAG=-O2
 #DEBUG_FLAG=-g -DDEBUG
 CFLAGS=-Wall -MMD
-CONTROLER=nvconfig
-CONTROLER_OBJS=nvconfig.o log.o sock.o util.o netutil.o
-LDFLAGS=
-
 OSTYPE=OS_$(shell uname -s | tr 'a-z' 'A-Z')
 CFLAGS+=-D${OSTYPE}
+EXFLAGS=-O2
+
+DAEMON=nvgred
+OBJS=main.o log.o sock.o net.o util.o netutil.o table.o tap.o nvgre.o cmd.o config.o
+OBJS:=$(addprefix ${VPATH}/, ${OBJS})
+SRCS=${OBJS:%.o=%.c}
+DEPS=${OBJS:%.o=%.d}
+
+CONTROLER=nvconfig
+CONTROLER_OBJS=nvconfig.o log.o sock.o util.o netutil.o
+CONTROLER_OBJS:=$(addprefix ${VPATH}/, ${CONTROLER_OBJS})
+CONTROLER_DEPS=${CONTROLER_OBJS:%.o=%.d}
 
 ifeq (${OSTYPE}, OS_LINUX)
 OS_DIST=$(shell head -1 /etc/issue|cut -d ' ' -f1)
@@ -31,7 +36,7 @@ CONFIG_DST=/etc/nvgre.conf
 .SUFFIXES: .c .o
 
 .c.o:
-	${CC} ${CFLAGS} ${EXTRA_FLAG} -c $< ${LDFLAGS}
+	${CC} ${CFLAGS} ${EXFLAGS} -c $< -o $@
 
 .PHONY: all debug clean test install uninstall
 
@@ -39,21 +44,21 @@ all:${DAEMON} ${CONTROLER}
 -include $(DEPS)
 
 ${DAEMON}:${OBJS}
-	${CC} ${CFLAGS} ${EXTRA_FLAG} -o $@ $^ ${LDLIBS} ${LDFLAGS}
+	${CC} ${CFLAGS} ${EXFLAGS} ${LDLIBS} -o $@ $^
 
 ${CONTROLER}:${CONTROLER_OBJS}
-	${CC} ${CFLAGS} ${EXTRA_FLAG} -o $@ $^ ${LDFLAGS}
+	${CC} ${CFLAGS} ${EXFLAGS} -o $@ $^
 
 debug:
-	${MAKE} EXTRA_FLAG="-g -DDEBUG -O0" OBJS="${OBJS}"
+	${MAKE} EXFLAGS="-g -DDEBUG -O0" OBJS="${OBJS}"
 
 netdebug:
-	${MAKE} EXTRA_FLAG="-g -DDEBUG -O0" OBJS="${OBJS}"
+	${MAKE} EXFLAGS="-g -DDEBUG -O0" OBJS="${OBJS}"
 #	@cd test && ${MAKE}
 
 clean:
-	@rm -f *.o ${DEPS} ${DAEMON} ${CONTROLER}
-	@cd test && ${MAKE} -s clean
+	@rm -f ${VPATH}/*.o ${VPATH}/*.d ${DAEMON} ${CONTROLER}
+#	@cd test && ${MAKE} -s clean
 
 .PHONY: install-bin install-conf install-script
 
