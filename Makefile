@@ -1,4 +1,3 @@
-# GCC
 CC=gcc
 VPATH=src
 LDLIBS=-lpthread
