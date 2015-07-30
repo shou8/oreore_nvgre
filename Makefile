@@ -19,6 +19,7 @@ CONTROLER_DEPS=${CONTROLER_OBJS:%.o=%.d}
 
 ifeq (${OSTYPE}, OS_LINUX)
 OS_DIST=$(shell head -1 /etc/issue|cut -d ' ' -f1)
+LDLIBS=-pthread
 endif
 
 PREFIX=/usr/local/bin
