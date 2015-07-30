@@ -5,10 +5,10 @@
 #include <string.h>
 #include <inttypes.h>
 #include <sys/socket.h>
-#ifndef OS_LINUX
+#ifndef __linux__
 #include <sys/types.h>
 #include <netinet/in.h>
-#endif /* OS_LINUX */
+#endif /* __linux__ */
 #include <netinet/ip.h>
 
 #include "base.h"
@@ -65,13 +65,13 @@ int outer_loop(int soc)
 		/* IP */
 
 		// Skip over IP header
-#ifdef OS_LINUX
+#ifdef __linux__
 		struct iphdr *iphdr = (struct iphdr *)buf;
 		size_t iph_len = iphdr->ihl * 4;
 #else
 		struct ip *iphdr = (struct ip *)buf;
 		size_t iph_len = (size_t)iphdr->ip_hl * 4;
-#endif /* OS_LINUX */
+#endif /* __linux__ */
 		bp = buf + iph_len;
 		len -= iph_len;
 

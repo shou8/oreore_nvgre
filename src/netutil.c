@@ -10,18 +10,18 @@
 #include <netdb.h>
 #include <arpa/inet.h>
 #include <sys/types.h>
-#ifndef OS_LINUX
+#ifndef __linux__
 #include <ifaddrs.h>
 #include <net/if_dl.h>
 #include <net/if_types.h>
-#endif /* OS_LINUX */
+#endif /* __linux__ */
 
 #include "netutil.h"
 #include "log.h"
 
-#ifdef OS_DARWIN
+#ifdef __APPLE__
 #include "ethertype.h"
-#endif /* OS_DARWIN */
+#endif /* __APPLE__ */
 
 
 
@@ -106,7 +106,7 @@ struct in_addr get_addr(char *if_name)
 
 uint8_t *get_mac(int sock, char *name, uint8_t *hwaddr)
 {
-#ifdef OS_LINUX
+#ifdef __linux__
 //	uint8_t *addr;
 	struct ifreq ifreq;
 
@@ -135,7 +135,7 @@ uint8_t *get_mac(int sock, char *name, uint8_t *hwaddr)
 			break;
 		}
 	}
-#endif /* OS_LINUX */
+#endif /* __linux__ */
 
 	return hwaddr;
 }
@@ -263,9 +263,9 @@ int get_sockaddr(struct sockaddr_storage *saddr, const char *caddr)
 	memset(&hints, 0, sizeof(hints));
 	hints.ai_family = AF_UNSPEC;
 	hints.ai_socktype = SOCK_RAW;
-#ifndef OS_DARWIN
+#ifndef __APPLE__
 	hints.ai_protocol = IPPROTO_GRE;
-#endif /* OS_DARWIN */
+#endif /* __APPLE__ */
 	hints.ai_flags = AI_NUMERICHOST;
 
 	int result = getaddrinfo(caddr, NULL, &hints, &res);

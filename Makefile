@@ -4,7 +4,6 @@ LDLIBS=-lpthread
 #DEBUG_FLAG=-g -DDEBUG
 CFLAGS=-Wall -MMD
 OSTYPE=OS_$(shell uname -s | tr 'a-z' 'A-Z')
-CFLAGS+=-D${OSTYPE}
 EXFLAGS=-O2
 
 DAEMON=nvgred

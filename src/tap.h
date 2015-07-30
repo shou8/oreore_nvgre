@@ -5,12 +5,12 @@
 
 int tap_alloc(char *dev);
 int tap_up(char *dev);
-#ifndef OS_LINUX
+#ifndef __linux__
 void tap_destroy(char *dev);
-#ifndef OS_DARWIN
+#ifdef __FreeBSD__
 int tap_rename(char *oldName, char *newName);
-#endif /* OS_DARWIN */
-#endif /* OS_LINUX */
+#endif /* __FreeBSD__ */
+#endif /* __linux__ */
 
 
 

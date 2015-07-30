@@ -9,9 +9,9 @@
 #include <arpa/inet.h>
 #include <net/if.h>
 
-#ifndef OS_LINUX
+#ifndef __linux__
 #include <netinet/in.h>
-#endif /* OS_LINUX */
+#endif /* __linux__ */
 
 #include "base.h"
 #include "log.h"
@@ -189,11 +189,11 @@ int join_mcast6_group(int sock, struct in6_addr *maddr, char *if_name)
 		return -1;
 	}
 
-#ifdef OS_LINUX
+#ifdef __linux__
 	if (setsockopt(sock, IPPROTO_IPV6, IPV6_ADD_MEMBERSHIP, (char *)&mreq6, sizeof(mreq6)) < 0) {
 #else
 	if (setsockopt(sock, IPPROTO_IPV6, IPV6_JOIN_GROUP, (char *)&mreq6, sizeof(mreq6)) < 0) {
-#endif /* OS_LINUX */
+#endif /* __linux__ */
 		log_perr("setsockopt");
 		log_err("Fail to set IPV6_ADD_MEMBERSHIP\n");
 		log_err("Interface : %u\n", mreq6.ipv6mr_interface);
@@ -221,11 +221,11 @@ int leave_mcast6_group(int sock, struct in6_addr *maddr, char *if_name)
 	}
 #endif /* DEBUG */
 
-#ifdef OS_LINUX
+#ifdef __linux__
 	if (setsockopt(sock, IPPROTO_IPV6, IPV6_DROP_MEMBERSHIP, (char *)&mreq6.ipv6mr_interface, sizeof(mreq6.ipv6mr_interface)) < 0) {
 #else
 	if (setsockopt(sock, IPPROTO_IPV6, IPV6_LEAVE_GROUP, (char *)&mreq6.ipv6mr_interface, sizeof(mreq6.ipv6mr_interface)) < 0) {
-#endif /* OS_LINUX */
+#endif /* __linux__ */
 		inet_ntop(AF_INET6, &mreq6.ipv6mr_multiaddr, maddr_s, sizeof(maddr_s));
 		log_perr("setsockopt");
 		log_err("Fail to set IPV6_DROP_MEMBERSHIP\n");

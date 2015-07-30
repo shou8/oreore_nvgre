@@ -31,7 +31,7 @@
 
 
 // For NULL-Terminated
-#ifdef OS_LINUX
+#ifdef __linux__
 #define StrCpy(dst, src, len)				\
 	do {									\
 		strncpy((dst), (src), (len - 1));	\
@@ -39,7 +39,7 @@
 	} while(0)
 #else
 #define StrCpy(dst, src, len) (strlcpy((dst), (src), (len)))
-#endif /* OS_LINUX */
+#endif /* __linux__ */
 
 
 

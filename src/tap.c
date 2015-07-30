@@ -5,9 +5,9 @@
 #include <errno.h>
 #include <net/if.h>
 #include <limits.h>
-#ifdef OS_LINUX
+#ifdef __linux__
 #include <linux/if_tun.h>
-#endif /* OS_LINUX */
+#endif /* __linux__ */
 #include <sys/socket.h>
 #include <sys/ioctl.h>
 #include <unistd.h>
@@ -22,7 +22,7 @@ int tap_alloc(char *dev)
 	int fd;
 	struct ifreq ifr;
  
-#ifdef OS_LINUX
+#ifdef __linux__
 
 	if ((fd = open("/dev/net/tun", O_RDWR)) < 0)
 		log_pcexit("open");
@@ -37,7 +37,7 @@ int tap_alloc(char *dev)
 		return -1;
 	}
 
-#else /* OS_LINUX */
+#else /* __linux__ */
 
 	char devPath[PATH_MAX];
 	snprintf(devPath, PATH_MAX, "/dev/%s", dev);
@@ -57,7 +57,7 @@ int tap_alloc(char *dev)
 		}
 	}
 
-#endif /* OS_LINUX */
+#endif /* __linux__ */
 
 	return fd;
 }
@@ -132,7 +132,7 @@ int tap_down(char *dev)
 
 
 
-#ifndef OS_LINUX
+#ifndef __linux__
 
 void tap_destroy(char *dev)
 {
@@ -153,7 +153,7 @@ void tap_destroy(char *dev)
 
 
 
-#ifndef OS_DARWIN
+#ifdef __FreeBSD__
 int tap_rename(char *oldName, char *newName)
 {
 	int fd = 0;
@@ -174,8 +174,8 @@ int tap_rename(char *oldName, char *newName)
 
 	return 0;
 }
-#endif /* OS_DARWIN */
-#endif /* OS_LINUX */
+#endif /* __FreeBSD__ */
+#endif /* __linux__ */
 
 
 

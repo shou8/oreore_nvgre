@@ -27,12 +27,12 @@ static int _syslog_mode = SYSLOG_ENABLE;
 
 // Using for message information
 static int _pid;						// Process ID
-#ifndef OS_LINUX
+#ifndef __linux__
 #include <limits.h>
 static char _h_name[_POSIX_HOST_NAME_MAX];
 #else
 static char _h_name[HOST_NAME_MAX];		// Host Name
-#endif /* OS_LINUX */
+#endif /* __linux__ */
 
 #ifdef DEBUG
 int debug_mode = DEBUG_DISABLE;

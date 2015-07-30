@@ -5,9 +5,9 @@
 #include <pthread.h>
 #include <getopt.h>
 
-#ifndef OS_LINUX
+#ifndef __linux__
 #include <signal.h>
-#endif /* OS_LINUX */
+#endif /* __linux__ */
 
 #include "base.h"
 #include "log.h"
@@ -66,7 +66,7 @@ int main(int argc, char *argv[])
 #endif /* DEBUG */
 	enable_syslog();
 
-#ifndef OS_LINUX
+#ifndef __linux__
 
 	struct sigaction sa;
 
@@ -79,7 +79,7 @@ int main(int argc, char *argv[])
 			sigaction(SIGTERM, &sa, NULL) < 0)
 		log_perr("signal");
 
-#endif /* OS_LINUX */
+#endif /* __linux__ */
 
 	while ((opt = getopt_long(argc, argv, "c:dDhi:m:p:s:v", options, NULL)) != -1) {
 		switch (opt) {
@@ -160,14 +160,14 @@ int main(int argc, char *argv[])
 	if (init_nvgre() < 0)
 		log_cexit("Failed to initialize nvgre\n");
 
-#ifndef OS_DARWIN
+#ifndef __APPLE__
 	/* Daemon */
 	if ( enable_d ) {
 		if (daemon(1, 0) != 0) log_perr("daemon");
 		create_pid_file(pid_path);
 		disable_syslog();
 	}
-#endif /* OS_DARWIN */
+#endif /* __APPLE__ */
 
 	/* Set parameter (After option) */
 	if (len > 0) {

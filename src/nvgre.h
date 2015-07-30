@@ -54,9 +54,9 @@ int init_nvgre(void);
 void destroy_nvgre(void);
 nvgre_i *add_nvi(char *buf, uint8_t *vsid, struct sockaddr_storage);
 void del_nvi(char *buf, uint8_t *vsid);
-#ifndef OS_LINUX
+#ifndef __linux__
 void sig_catch(int sig);
-#endif /* OS_LINUX */
+#endif /* __linux__ */
 
 
 
