@@ -55,7 +55,7 @@ int main(int argc, char *argv[])
 				dom = optarg;
 				continue;
 			case 'v':
-				fprintf(stderr, "VXLAN client version "CLIENT_VERSION"\n");
+				fprintf(stderr, "NVGRE client version "CLIENT_VERSION"\n");
 				exit(EXIT_SUCCESS);
 			case 'h':
 				client_usage();
