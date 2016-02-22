@@ -93,17 +93,16 @@ int init_nvgre(void)
 
 static void init_nvi(void)
 {
-	nvgre.nvi = (nvgre_i ****)malloc(sizeof(nvgre_i ***) * NUMOF_UINT8);
-	if (nvgre.nvi == NULL) log_pcexit("malloc");
-	nvgre.nvi[0] = (nvgre_i ***)malloc(sizeof(nvgre_i **) * NUMOF_UINT8 * NUMOF_UINT8);
-	if (nvgre.nvi[0] == NULL) log_pcexit("malloc");
-	nvgre.nvi[0][0] = (nvgre_i **)malloc(sizeof(nvgre_i *) * NUMOF_UINT8 * NUMOF_UINT8 * NUMOF_UINT8);
-	if ( nvgre.nvi[0][0] == NULL ) log_pcexit("malloc");
+	nvgre.nvi = (nvgre_i ****)calloc(NUMOF_UINT8, sizeof(nvgre_i ***));
+	if (nvgre.nvi == NULL) log_pcexit("calloc");
+	nvgre.nvi[0] = (nvgre_i ***)calloc(NUMOF_UINT8 * NUMOF_UINT8, sizeof(nvgre_i **));
+	if (nvgre.nvi[0] == NULL) log_pcexit("calloc");
+	nvgre.nvi[0][0] = (nvgre_i **)calloc(NUMOF_UINT8 * NUMOF_UINT8 * NUMOF_UINT8, sizeof(nvgre_i *));
+	if ( nvgre.nvi[0][0] == NULL ) log_pcexit("calloc");
 
-	int i,j;
-	for (i=0; i<NUMOF_UINT8; i++) {
+	for (int i = 0; i < NUMOF_UINT8; i++) {
 		nvgre.nvi[i] = nvgre.nvi[0] + i * NUMOF_UINT8;
-		for (j=0; j<NUMOF_UINT8; j++)
+		for (int j = 0; j < NUMOF_UINT8; j++)
 			nvgre.nvi[i][j] = nvgre.nvi[0][0] + i * NUMOF_UINT8 * NUMOF_UINT8 + j * NUMOF_UINT8;
 	}
 
@@ -115,7 +114,7 @@ static void init_nvi(void)
 static device *create_nvgre_if(uint8_t *vsid)
 {
 	uint32_t vsid32 = To32ex(vsid);
-	device *tap = (device *)malloc(sizeof(device));
+	device *tap = (device *)calloc(1, sizeof(device));
 	memset(tap, 0, sizeof(device));
 
 #ifdef __linux__
@@ -173,16 +172,16 @@ nvgre_i *add_nvi(char *buf, uint8_t *vsid, struct sockaddr_storage maddr)
 #endif /* BASE_ON_RFC */
 	}
 
-	nvgre_i *v = (nvgre_i *)malloc(sizeof(nvgre_i));
+	nvgre_i *v = (nvgre_i *)calloc(1, sizeof(nvgre_i));
 	if (v == NULL) {
-		log_pcrit("malloc");
+		log_pcrit("calloc");
 		return NULL;
 	}
 
 	memcpy(v->vsid, vsid, VSID_BYTE);
 	v->table = init_table(DEFAULT_TABLE_SIZE);
 	if (v->table == NULL) {
-		log_pcrit("malloc");
+		log_pcrit("calloc");
 		free(v);
 		return NULL;
 	}
@@ -228,11 +227,12 @@ void del_nvi(char *buf, uint8_t *vsid)
 	 * But, full search is too inefficient.
 	 */
 
+	int i, j, k;
+
 	if (memcmp(&nvgre.nvi[vsid[0]][vsid[1]][vsid[2]]->maddr, &nvgre.maddr, sizeof(struct sockaddr_storage)) != 0) {
-		int i, j, k;
-		for (i=0; i<NUMOF_UINT8; i++) {
-			for (j=0; j<NUMOF_UINT8; j++) {
-				for (k=0; k<NUMOF_UINT8; k++) {
+		for (i = 0; i<NUMOF_UINT8; i++) {
+			for (j = 0; j<NUMOF_UINT8; j++) {
+				for (k = 0; k<NUMOF_UINT8; k++) {
 					if (nvgre.nvi[i][j][k] == NULL) continue;
 					if (memcmp(&nvgre.nvi[i][j][k]->maddr, &nvgre.nvi[vsid[0]][vsid[1]][vsid[2]]->maddr, sizeof(struct sockaddr_storage)) != 0)
 						break;
@@ -274,11 +274,9 @@ void del_nvi(char *buf, uint8_t *vsid)
 
 void destroy_nvgre(void)
 {
-	int i, j, k;
-
-	for (i=0; i<NUMOF_UINT8; i++) {
-		for (j=0; j<NUMOF_UINT8; j++) {
-			for (k=0; k<NUMOF_UINT8; k++) {
+	for (int i = 0; i<NUMOF_UINT8; i++) {
+		for (int j = 0; j<NUMOF_UINT8; j++) {
+			for (int k = 0; k<NUMOF_UINT8; k++) {
 				if (nvgre.nvi[i][j][k] != NULL) {
 					nvgre_i *v = nvgre.nvi[i][j][k];
 					pthread_cancel(v->th);

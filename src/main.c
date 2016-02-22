@@ -124,9 +124,8 @@ int main(int argc, char *argv[])
 	int len = get_config(nvgre.conf_path, conf);
 
 	/* Set config paramaters (before option parameter) */
-	int i;
 	if (len > 0) {
-		for (i=0; i<len; i++) {
+		for (int i = 0; i < len; i++) {
 			if (conf[i].param_no == 3) continue;
 			if (set_config(&conf[i]) < 0) log_cexit("Invalid configuration\n");
 		}
@@ -137,7 +136,7 @@ int main(int argc, char *argv[])
 #endif /* DEBUG */
 	if ( enable_i != 0 ) {
 		if (nvgre.if_name == NULL)
-			nvgre.if_name = (char *)malloc(sizeof(char) * DEFAULT_BUFLEN);
+			nvgre.if_name = (char *)calloc(DEFAULT_BUFLEN, sizeof(char));
 		StrCpy(nvgre.if_name, argv[enable_i], sizeof(char) * DEFAULT_BUFLEN);
 	}
 	if ( enable_m != 0 )
@@ -171,7 +170,7 @@ int main(int argc, char *argv[])
 
 	/* Set parameter (After option) */
 	if (len > 0) {
-		for (i=0; i<len; i++) {
+		for (int i = 0; i < len; i++) {
 			if (conf[i].param_no != 3) continue;
 			if (set_config(&conf[i]) < 0) log_cexit("Invalid configuration\n");
 		}

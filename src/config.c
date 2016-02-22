@@ -51,7 +51,7 @@ int get_config(char *config_path, struct config *conf)
 
 		// if this line includes '#', the point is regarded as end of line
 		bracket = 0;
-		for (p=line; *p != '\0'; p++) {
+		for (p = line; *p != '\0'; p++) {
 			if ( *p == '"' || *p == '\'' ) {
 				bracket ^= *p;
 				break;
@@ -78,7 +78,7 @@ int get_config(char *config_path, struct config *conf)
 		*val_c = '\0';
 		val_c++;
 
-		for (i=0; i<param_size; i++) {
+		for (i = 0; i < param_size; i++) {
 			param_c = rm_extra_char(param_c);
 			if (param_c == NULL) return -4;
 			if (str_cmp(param[i], param_c)) break;
@@ -108,8 +108,7 @@ int get_config(char *config_path, struct config *conf)
 
 static int match_char(char c, char *str, int len)
 {
-	int i;
-	for (i = 0; i < len; i++)
+	for (int i = 0; i < len; i++)
 		if (c == str[i]) return 1;
 
 	return 0;
@@ -136,7 +135,7 @@ static char *rm_extra_left_char(char *str, char *rm_chars)
 {
 	char *p;
 	int rm_chars_len = strlen(rm_chars);
-	for (p=str; *p != '\0'; p++)
+	for (p = str; *p != '\0'; p++)
 		if (! match_char(*p, rm_chars, rm_chars_len)) break;
 	return p++;
 }
@@ -169,7 +168,7 @@ int set_config(struct config *conf)
 			break;
 		case 1:
 			if (nvgre.if_name == NULL)
-				nvgre.if_name = (char *)malloc(sizeof(char) * DEFAULT_BUFLEN);
+				nvgre.if_name = (char *)calloc(DEFAULT_BUFLEN, sizeof(char));
 			StrCpy(nvgre.if_name, conf->value, sizeof(char) * DEFAULT_BUFLEN);
 			break;
 		case 2:

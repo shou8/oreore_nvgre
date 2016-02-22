@@ -149,8 +149,7 @@ uint8_t *get_mac(int sock, char *name, uint8_t *hwaddr)
  */
 void get_ran_mac( uint8_t hwaddr[MAC_LEN] )
 {
-	int i = 0;
-	for (i=0; i<MAC_LEN; i++)
+	for (int i = 0; i < MAC_LEN; i++)
 		hwaddr[i] = rand() % 0xFF;
 }
 
@@ -304,13 +303,11 @@ char *get_straddr(struct sockaddr_storage *saddr)
 
 char *get_byte2bits(uint8_t bits)
 {
-	int bit = 1;
-	int i = 0;
 	static char str[BIT_SIZE + 1];
-
 	str[BIT_SIZE] = '\0';
+	int i, bit;
 
-	for (i=BIT_SIZE-1; i>=0; i--, bit <<= 1)
+	for (i = BIT_SIZE - 1, bit = 1; i >= 0; i--, bit <<= 1)
 		str[i] = (bits & bit) ? '1' : '0';
 
 	return str;

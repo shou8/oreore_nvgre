@@ -4,7 +4,6 @@
 #include <time.h>
 #include <stdio.h>
 #include <limits.h>
-//#include <malloc.h>
 
 #include "netutil.h"
 #include "table.h"
@@ -37,7 +36,7 @@ list **init_table(unsigned int size) // hash table size
 	table_size = size % UINT_MAX;
 	if (table_size < TABLE_MIN) table_size = TABLE_MIN;
 	unsigned int mem_size = table_size * sizeof(list *);
-	list **table = (list **)malloc(sizeof(list *) * mem_size);
+	list **table = (list **)calloc(mem_size, sizeof(list *));
 	if (table == NULL) return NULL;
 	memset(table, 0, mem_size);
 
@@ -113,7 +112,7 @@ int add_data(list **table, uint8_t *hw_addr, struct sockaddr_storage *addr)
 
 	if (lp == NULL) {
 
-		*root = (list *)malloc(sizeof(list));
+		*root = (list *)calloc(1, sizeof(list));
 		if (*root == NULL) return -1;
 		memset(*root, 0, sizeof(list));
 
@@ -124,7 +123,7 @@ int add_data(list **table, uint8_t *hw_addr, struct sockaddr_storage *addr)
 
 		head = *root;
 		head->pre = NULL;
-		head->data = (mac_tbl *)malloc(sizeof(mac_tbl));
+		head->data = (mac_tbl *)calloc(1, sizeof(mac_tbl));
 		if (head->data == NULL) return -1;
 		memset(head->data, 0, sizeof(mac_tbl));
 

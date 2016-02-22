@@ -138,7 +138,7 @@ void ctl_loop(char *dom)
  * So we don'nt have to care memory location.
  *
  * If inner_loop is not infinite loop,
- * you have to use "malloc" to allocate to heap area.
+ * you have to use "calloc" to allocate to heap area.
  */
 
 void *inner_loop_thread(void *args)
@@ -213,7 +213,7 @@ int cmd_create_nvi(int soc, int cmd_i, int argc, char *argv[])
 	char buf[CTL_BUFLEN];
 	char *vsid_s = argv[1];
 //	uint8_t vsid[VSID_BYTE];
-	uint8_t *vsid = (uint8_t *)malloc(sizeof(uint8_t) * VSID_BYTE);
+	uint8_t *vsid = (uint8_t *)calloc(VSID_BYTE, sizeof(uint8_t));
 	uint32_t vsid32 = 0;
 	int status = get32and8arr(buf, vsid_s, &vsid32, vsid);
 	if (status != SUCCESS) return status;
@@ -295,11 +295,9 @@ static int _cmd_exit(int soc, int cmd_i, int argc, char *argv[])
 		return _cmd_usage(soc, cmd_i);
 	}
 
-	uint32_t i, j, k;
-
-	for (i=0; i<NUMOF_UINT8; i++) {
-		for (j=0; j<NUMOF_UINT8; j++) {
-			for (k=0; k<NUMOF_UINT8; k++) {
+	for (uint32_t i = 0; i < NUMOF_UINT8; i++) {
+		for (uint32_t j = 0; j < NUMOF_UINT8; j++) {
+			for (uint32_t k = 0; k < NUMOF_UINT8; k++) {
 				if (nvgre.nvi[i][j][k] != NULL) {
 					nvgre_i *v = nvgre.nvi[i][j][k];
 					pthread_cancel(v->th);
@@ -401,8 +399,6 @@ static int _cmd_show(int soc, int cmd_i, int argc, char *argv[])
 
 static int _cmd_help(int soc, int cmd_i, int argc, char *argv[])
 {
-	int i;
-
 	if (argc != 1) {
 		_soc_printf(soc, CTL_BUFLEN, "ERROR: Too many arguments\n", 26);
 		return _cmd_usage(soc, cmd_i);
@@ -411,7 +407,7 @@ static int _cmd_help(int soc, int cmd_i, int argc, char *argv[])
 	_soc_printf(soc, CTL_BUFLEN, "\n%"HELP_NAME_LEN"s | %-"HELP_ARG_LEN"s | %s\n", "name", "arguments", "comment");
 	_soc_printf(soc, CTL_BUFLEN, "   --------------+----------------------------------+---------------\n");
 
-	for (i=0; i<_cmd_len; i++)
+	for (int i = 0; i < _cmd_len; i++)
 		_soc_printf(soc, CTL_BUFLEN, "%"HELP_NAME_LEN"s   %-"HELP_ARG_LEN"s : %s\n", _cmd_t[i].name, (_cmd_t[i].arg == NULL)? "":_cmd_t[i].arg, _cmd_t[i].comment);
 
 	return CMD_HELP;
@@ -540,7 +536,7 @@ static int _cmd_add(int soc, int cmd_i, int argc, char *argv[])
 	}
 
 	if ( add_data(nvgre.nvi[vsid[0]][vsid[1]][vsid[2]]->table, mac, &addr) < 0 ) {
-		log_bperr(buf, "malloc");
+		log_bperr(buf, "calloc");
 		_soc_printf(soc, CTL_BUFLEN, "%s\n", buf);
 		return SRV_FAILED;
 	}
@@ -653,10 +649,9 @@ static void _show_nvi(int soc)
 	_soc_printf(soc, CTL_BUFLEN, "%"vsid_PAD_LEN"s | %s\n", "vsid", "Multicast address");
 	_soc_printf(soc, CTL_BUFLEN, " -----------+----------------\n");
 
-	int i,j,k;
-	for (i=0; i<NUMOF_UINT8; i++)
-		for (j=0; j<NUMOF_UINT8; j++)
-			for (k=0; k<NUMOF_UINT8; k++)
+	for (int i = 0; i < NUMOF_UINT8; i++)
+		for (int j = 0; j < NUMOF_UINT8; j++)
+			for (int k = 0; k < NUMOF_UINT8; k++)
 				if (nvi[i][j][k] != NULL) {
 					uint32_t vsid32 = To32(i, j, k);
 					_soc_printf(soc, CTL_BUFLEN, "%"vsid_PAD_LEN""PRIu32" : %s\n", vsid32, get_straddr(&nvi[i][j][k]->maddr));
