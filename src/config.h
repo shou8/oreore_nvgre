@@ -4,9 +4,9 @@
 
 
 struct config {
-	int line_no;
-	int param_no;
-	char value[DEFAULT_BUFLEN];
+    int line_no;
+    int param_no;
+    char value[DEFAULT_BUFLEN];
 };
 
 

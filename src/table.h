@@ -14,19 +14,19 @@
 
 typedef struct _macaddr_table_
 {
-	int usoc;
-	uint8_t hw_addr[MAC_LEN];
-	struct sockaddr_storage addr;
-	time_t time;
+    int usoc;
+    uint8_t hw_addr[MAC_LEN];
+    struct sockaddr_storage addr;
+    time_t time;
 } mac_tbl;
 
 
 
 typedef struct _list_
 {
-	mac_tbl *data;
-	struct _list_ *pre;
-	struct _list_ *next;
+    mac_tbl *data;
+    struct _list_ *pre;
+    struct _list_ *next;
 } list;
 
 
